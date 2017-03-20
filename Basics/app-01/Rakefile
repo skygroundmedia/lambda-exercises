@@ -1,0 +1,9 @@
+namespace :app do
+  desc "Upload a local zip file to AWS S3 bucket"
+  task :upload do
+    local_zip_file = ""
+    bucket_name = ""
+    profile = ""
+    sh %{ aws s3 cp #{local_zip_file} s3://#{bucket_name} --profile #{profile} }
+  end
+end

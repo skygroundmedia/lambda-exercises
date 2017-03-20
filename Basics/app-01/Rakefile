@@ -1,4 +1,10 @@
 namespace :app do
+  desc "Archive your app for upload."
+  task :archive do
+    name_of_app = "myapp"
+    sh %{ zip -r #{name_of_app} * }
+  end
+  
   desc "Upload a local zip file to AWS S3 bucket"
   task :upload do
     local_zip_file = ""

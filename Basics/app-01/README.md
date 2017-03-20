@@ -40,15 +40,15 @@ Since we are using 3rd party libraries, we cannot copy and paste our javascript 
 
 Zip up all the files and folder (recursively) into a file named ```myapp.zip```.
 ```language-javascript
-zip -r myapp * 
+rake app:archive
 ```
 
 
 ### Uploading
 
-Double check that you have access to the bucket you are targeting.
+I created a Rakefile to keep things looking pretty. If you're unfamiliar with Rake, [read this tutorial](http://www.chrisjmendez.com/2016/07/31/rails-5-tasks/).
 ```language-powerbash
-aws s3 ls --profile name_of_my_profile
+rake app:upload
 ```
 
 

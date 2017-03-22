@@ -165,7 +165,7 @@ aws lambda delete-function \
 
 
 ```
- aws lambda create-function --function-name MakeThumbnail --region us-west-2 --zip-file fileb://./MakeThumbnail.zip --role arn:aws:iam::141xxxxxxxx5:role/role-devops --timeout 10 --memory-size 1024 --description "This will convert a file from a cc-user-profile-image and create a cc-user-profile-image-thumbnail" --handler MakeThumbnail.handler --runtime nodejs
+ aws lambda create-function --function-name MakeThumbnail --region us-west-2 --zip-file fileb://./MakeThumbnail.zip --role arn:aws:iam::141896505695:role/role-devops --timeout 10 --memory-size 1024 --description "This will convert a file from a cc-user-profile-image and create a cc-user-profile-image-thumbnail" --handler MakeThumbnail.handler --runtime nodejs
 ```
 
 ---
@@ -200,12 +200,11 @@ sudo npm install aws-sdk -g
 Testing out lambda commands on your local machine using [fakes3](https://github.com/jubos/fake-s3)
 
 Install
-```
+``
 gem install fakes3
 ```
 
 Start server
-
 ```
 fakes3 -r /mnt/fakes3_root -p 4567
 ```

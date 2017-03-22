@@ -1,0 +1,14 @@
+{
+  "name": "get_user_profile_thumbnail",
+  "version": "0.0.1",
+  "description": "Get the user profile thumbnail image",
+  "main": "getUserProfileThumbnail.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "@chrismendezinla",
+  "license": "MIT",
+  "dependencies": {
+    "async": "^2.0.0-rc.3"
+  }
+}

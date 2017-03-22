@@ -1,0 +1,16 @@
+{
+  "name": "make_thumbnail",
+  "version": "0.0.1",
+  "description": "Create a thumbnail from any image published to S3 bucket user-profile-image",
+  "main": "MakeThumbnail.js",
+  "dependencies": {
+    "async": "^2.0.0-rc.3",
+    "gm": "^1.22.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "@chrismendezinla",
+  "license": "MIT"
+}

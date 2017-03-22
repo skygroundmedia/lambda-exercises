@@ -10,5 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "faker": "^4.1.0"
+  },
+  "devDependencies": {
+    "jake": "^8.0.15"
   }
 }

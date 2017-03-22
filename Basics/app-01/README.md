@@ -32,7 +32,7 @@ npm install
 
 
 
-## Deployment
+## Deployment using Rake
 
 Since we are using 3rd party libraries, we cannot copy and paste our javascript code into the browser directly. Instead, we must archive the files into .zip and upload them using the ```aws``` client.
 
@@ -53,7 +53,8 @@ rake app:upload
 
 
 
-### 
+## Deployment using Jake
+
 
 
 ---
@@ -69,3 +70,11 @@ rake app:upload
 - If you do not have the right permissions to upload files, read this tutorial on [How to create Policy Files for S3](http://www.chrisjmendez.com/2017/03/06/aws-copy-from-one-s3-bucket-to-another/).
 
 - If you do not have AWS client installed on your desktop computer, read [How to install AWSCLI using Homebrew](http://www.chrisjmendez.com/2017/02/18/aws-installing-aws-client-using-homebrew/) 
+
+
+---
+
+
+# Resource
+
+* [Using Jake](https://howtonode.org/intro-to-jake)

@@ -1,20 +1,31 @@
-desc('This is the default task.');
-task('default', [], function (params) {
-  console.log('This is the default task.');
-  console.log(sys.inspect(arguments));
+var util = require('util');
+
+desc('Archive app and upload to S3.');
+task('default', [], function (name_of_app, bucket, awscli_profile) {
+  console.log('Jake Start.');
+  var task = jake.Task['app:archive'];
+      task.invoke.apply(task, [name_of_app, bucket, awscli_profile])
 });
 
-
-namespace('foo', function () {
-  desc('This the foo:bar task');
-  task('bar', [], function () {
-    console.log('doing foo:bar task');
-    console.log(sys.inspect(arguments));
+namespace('app', function () {
+  desc('Archive app for upload.');
+  task('archive', [], function (name_of_app, bucket, awscli_profile) {
+    console.log("Archive Starting.");
+    var cmds = [ util.format('zip -r %s *', name_of_app) ];
+    jake.exec(cmds, { printStdout: false }, function(){
+      console.log("Archive Complete.");
+      var task = jake.Task['app:upload'];
+          task.invoke.apply(task, [name_of_app, bucket, awscli_profile])
+    })
   });
 
-  desc('This the foo:baz task');
-  task('baz', ['default', 'foo:bar'], function () {
-    console.log('doing foo:baz task');
-    console.log(sys.inspect(arguments));
-  }); 
-}
+  desc('Upload a local .zip file to an AWS S3 bucket.');
+  task('upload', { async: true }, function (name_of_app, bucket, awscli_profile) {
+    console.log("Upload Start.");
+    var cmds = [ util.format('aws s3 cp %s.zip s3://%s --profile %s', name_of_app, bucket, awscli_profile) ];
+    jake.exec(cmds, { printStdout: false }, function () {
+      console.log("Upload Complete.");
+      complete();
+    });
+  });
+});

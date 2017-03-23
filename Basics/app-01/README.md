@@ -44,6 +44,7 @@ rake app:archive
 ```
 
 
+
 ### Uploading
 
 I created a Rakefile to keep things looking pretty. If you're unfamiliar with Rake, [read this tutorial](http://www.chrisjmendez.com/2016/07/31/rails-5-tasks/).
@@ -54,6 +55,16 @@ rake app:upload
 
 
 ## Deployment using Jake
+
+You can run the ```jake``` app which will bundles the files within a .zip and upload it to AWS S3:
+
+```language-powerbash
+jake default[name_of_zip,name_of_s3_bucket,name_of_awscli_profile]
+```
+
+*Pay special attention to the fact that there are no spaces between params.*
+
+
 
 
 
@@ -75,6 +86,7 @@ rake app:upload
 ---
 
 
-# Resource
+# Resources
 
 * [Using Jake](https://howtonode.org/intro-to-jake)
+* [Jake Docs](https://www.npmjs.com/package/jake)

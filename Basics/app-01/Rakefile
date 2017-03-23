@@ -1,15 +1,15 @@
 namespace :app do
-  desc "Archive your app for upload."
+  name_of_app    = ""
+  bucket_name    = ""
+  awscli_profile = ""
+  
+  desc "Archive app for upload."
   task :archive do
-    name_of_app = "myapp"
     sh %{ zip -r #{name_of_app} * }
   end
   
-  desc "Upload a local zip file to AWS S3 bucket"
+  desc "Upload a local .zip file to an AWS S3 bucket."
   task :upload do
-    local_zip_file = ""
-    bucket_name = ""
-    profile = ""
-    sh %{ aws s3 cp #{local_zip_file} s3://#{bucket_name} --profile #{profile} }
+    sh %{ aws s3 cp #{name_of_app}.zip s3://#{bucket_name} --profile #{awscli_profile} }
   end
 end

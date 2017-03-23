@@ -11,7 +11,8 @@ namespace('app', function () {
   desc('Archive app for upload.');
   task('archive', [], function (name_of_app, bucket, awscli_profile) {
     console.log("Archive Starting.");
-    var cmds = [ util.format('zip -r %s *', name_of_app) ];
+    var exclude = '-x .\* -x "package.json" -x "Jakefile.js" -x \*.md -x "node_modules/\*"'
+    var cmds = [ util.format('zip -r %s * %s', name_of_app, exclude) ];
     jake.exec(cmds, { printStdout: false }, function(){
       console.log("Archive Complete.");
       var task = jake.Task['app:upload'];

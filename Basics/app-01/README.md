@@ -8,6 +8,10 @@ If you're unfamiliar with AWS Lambda, [read this tutorial first](http://www.chri
 
 ---
 
+# Workflow
+
+My process is to create Lambda functions on my local computer. Using Node Package Manager, I am installing special libraries such as ```faker``` and ```lodash``` which means that I cannot copy and paste the code directly into the Lambda console. Instead, I am zipping up the Javascript files and uploading them to AWS S3. From there, I am linking the new Lambda functions to the .zip file.
+
 
 
 # Getting Started
@@ -45,6 +49,7 @@ Install any external libraries found within ```package.json```
 ```language-powerbash
 npm install
 ```
+
 
 
 

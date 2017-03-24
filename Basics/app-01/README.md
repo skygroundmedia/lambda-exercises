@@ -12,13 +12,21 @@ If you're unfamiliar with AWS Lambda, [read this tutorial first](http://www.chri
 
 # Getting Started
 
-## Development
+## Step 1 - Prerequisites 
 
-### Step 1 - Install Jake packager
+You need to first do a few things to get started.  You must:
 
-This project relies on [Jake](https://www.npmjs.com/package/jake) to archive and upload files to AWS S3. Jake is similar to Ruby Rake or Java Ant. It simply helps you create command lines that complete chores.
+* Install AWS Client either through [Homebrew](http://www.chrisjmendez.com/2017/02/18/aws-installing-aws-client-using-homebrew/) or [Manually](http://www.chrisjmendez.com/2017/02/17/aws-installing-aws-client-manually/)
+* Create a user and permissions to use Lambda. You can learn more by reading the ["Getting Started"](http://www.chrisjmendez.com/2017/02/19/aws-lambda-on-osx/) section.
+* Install NodeJS either through [Homebrew](http://blog.teamtreehouse.com/install-node-js-npm-mac) or [Manually](https://nodejs.org/en/)
 
-The reason why I'm installing Jake globally –and not as a devDependency– is so that we don't package up any unnecessary dependencies to S3. 
+
+
+## Step 2 - Install ```npm``` Jake
+
+This project relies on [Jake](https://www.npmjs.com/package/jake) to archive and upload files to AWS S3. Jake is similar to [Ruby Rake](http://www.chrisjmendez.com/2016/07/31/rails-5-tasks/) or [Java Ant](http://www.javaworld.com/article/2076208/java-app-dev/automate-your-build-process-using-java-and-ant.html). It helps you create command-lines that complete tedious tasks.
+
+I'm installing Jake globally –and not as an ```npm``` ```devDependency```– so that we don't package up any unnecessary dependencies to S3. 
 
 ```language-powerbash
 npm install -g jake
@@ -26,7 +34,7 @@ npm install -g jake
 
 
 
-### Step 2 - Install 3rd party libraries
+## Step 3 - Install 3rd party libraries
 
 Change directory:
 ```language-powerbash

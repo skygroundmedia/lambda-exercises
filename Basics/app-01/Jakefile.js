@@ -39,7 +39,10 @@ task('default', {async: true}, function (name_of_app, bucket, awscli_profile) {
 namespace('app', function () {
   desc('Archive app for upload.');
   task('archive', { async: true }, function (name_of_app, bucket, awscli_profile) {
-    var exclude = '-x .\* -x "package.json" -x "Jakefile.js" -x \*.md -x "node_modules/\*"'
+    //Exclude the node_modules folder (not recommended)
+    var node_modules = '-x "node_modules/\*"'
+    //Exclude hidden files and single isolated files
+    var exclude = '-x .\* -x "package.json" -x "Jakefile.js" -x \*.md '
     var cmds = [ util.format('zip -r %s * %s', name_of_app, exclude) ];
     jake.exec(cmds, { printStdout: false }, function(){
       complete();

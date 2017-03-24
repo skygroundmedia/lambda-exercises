@@ -1,31 +1,55 @@
 var util = require('util');
 
 desc('Archive app and upload to S3.');
-task('default', [], function (name_of_app, bucket, awscli_profile) {
+task('default', {async: true}, function (name_of_app, bucket, awscli_profile) {
   console.log('Jake Start.');
-  var task = jake.Task['app:archive'];
-      task.invoke.apply(task, [name_of_app, bucket, awscli_profile])
+  function archive(){
+    var archive = jake.Task['app:archive'];
+    archive.addListener("start", function(){
+      console.log("Archive Start.");
+    })
+    archive.addListener("complete", function(){
+      console.log("Archive Complete.");
+      upload()
+    })
+    archive.addListener("error", function(e){
+      console.log("Archive Error: ", e.message, e.code);
+    })
+    archive.invoke.apply(archive, [name_of_app, bucket, awscli_profile]);
+  }
+
+  function upload(){
+    var upload = jake.Task['app:upload'];
+    upload.addListener("start", function(){
+      console.log("Upload Start.")
+    });
+    upload.addListener("complete", function(){
+      console.log("Upload Complete.")
+    })
+    upload.addListener("error", function(e){
+      console.log("Upload Error: ", e.message, e.code);
+    })
+    upload.invoke.apply(upload, [name_of_app, bucket, awscli_profile])
+    complete();
+  }
+  
+  archive();
 });
 
 namespace('app', function () {
   desc('Archive app for upload.');
-  task('archive', [], function (name_of_app, bucket, awscli_profile) {
-    console.log("Archive Starting.");
+  task('archive', { async: true }, function (name_of_app, bucket, awscli_profile) {
     var exclude = '-x .\* -x "package.json" -x "Jakefile.js" -x \*.md -x "node_modules/\*"'
     var cmds = [ util.format('zip -r %s * %s', name_of_app, exclude) ];
     jake.exec(cmds, { printStdout: false }, function(){
-      console.log("Archive Complete.");
-      var task = jake.Task['app:upload'];
-          task.invoke.apply(task, [name_of_app, bucket, awscli_profile])
+      complete();
     })
   });
 
   desc('Upload a local .zip file to an AWS S3 bucket.');
   task('upload', { async: true }, function (name_of_app, bucket, awscli_profile) {
-    console.log("Upload Start.");
     var cmds = [ util.format('aws s3 cp %s.zip s3://%s --profile %s', name_of_app, bucket, awscli_profile) ];
     jake.exec(cmds, { printStdout: false }, function () {
-      console.log("Upload Complete.");
       complete();
     });
   });

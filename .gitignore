@@ -1,3 +1,6 @@
+.DS_Store
+.zip
+
 # Logs
 logs
 *.log

@@ -1,6 +1,6 @@
 var util = require('util');
 
-desc('Archive app and upload to S3.');
+desc('Archive app and upload to S3. jake default[name_of_zip_file,s3_bucket,awscli_profile] ');
 task('default', {async: true}, function (name_of_app, bucket, awscli_profile) {
   console.log('Jake Start.');
   function archive(){

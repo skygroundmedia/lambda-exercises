@@ -1,8 +1,11 @@
 var util = require('util');
+var require('dotenv').config();
 
 desc('Archive app and upload to S3. jake default[name_of_zip_file,s3_bucket,awscli_profile] ');
 task('default', {async: true}, function (name_of_app, bucket, awscli_profile) {
   console.log('Jake Start.');
+  
+  
   function archive(){
     var archive = jake.Task['app:archive'];
     archive.addListener("start", function(){
@@ -39,10 +42,8 @@ task('default', {async: true}, function (name_of_app, bucket, awscli_profile) {
 namespace('app', function () {
   desc('Archive app for upload.');
   task('archive', { async: true }, function (name_of_app, bucket, awscli_profile) {
-    //Exclude the node_modules folder (not recommended)
-    var node_modules = '-x "node_modules/\*"'
-    //Exclude hidden files and single isolated files
-    var exclude = '-x .\* -x "package.json" -x "Jakefile.js" -x \*.md '
+    //Exclude hidden files, single isolated files, and specific node_modules
+    var exclude = '-x .\* -x "package.json" -x "Jakefile.js" -x \*.md -x "node_modules/dotenv\*"'
     var cmds = [ util.format('zip -r %s * %s', name_of_app, exclude) ];
     jake.exec(cmds, { printStdout: false }, function(){
       complete();

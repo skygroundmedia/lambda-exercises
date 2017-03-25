@@ -20,13 +20,13 @@ Steps 1 - 4
 
 ## AWS Lambda Stack
 
-- [Cloudwatch](https://us-west-2.console.aws.amazon.com/cloudwatch/home?region=us-- [AWS Kinesis](https://aws.amazon.com/kinesis/) for monitoring events and changes.
-- NodeJS for [AWS Lambda](https://aws.amazon.com/lambda/) development.
-- [AWS API Gateway](https://aws.amazon.com/api-gateway/) for endpoints (/users, /myaccount, /profile, etc).
-- [AWS S3](https://aws.amazon.com/s3/) for versioning and storage.
+- [AWS Cloudwatch](https://console.aws.amazon.com/cloudwatch/home) for measuring API / Lambda performance.
+- [AWS Kinesis](https://console.aws.amazon.com/kinesis/home) for sending messages between different AWS services.
+- NodeJS for [AWS Lambda](https://console.aws.amazon.com/lambda/home) development.
+- [AWS API Gateway](https://console.aws.amazon.com/apigateway/home) for endpoints (/users, /myaccount, /profile, etc).
+- [AWS S3](https://console.aws.amazon.com/s3/home) for versioning and storage.
 - NPM [Jake](https://www.npmjs.com/package/jake) for automating bash scripts and [awscli](https://aws.amazon.com/cli/) commands.
-- [AWS CodeCommit](https://aws.amazon.com/codecommit/) for versioning
-west-2#logs) for Lambda performance monitoring and measurement.
-- [AWS IAM](https://aws.amazon.com/iam/) for Identity Management and Governance.
+- [AWS CodeCommit](https://console.aws.amazon.com/console/home) for private git repo.
+- [AWS IAM](https://console.aws.amazon.com/console/home) for Identity Management and Governance.
 
 

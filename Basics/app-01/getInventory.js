@@ -1,6 +1,6 @@
 var faker = require('faker');
 
-exports.handler = function(event,context) {
+exports.handler = (event, context, callback) => {
 	var inventory = [];
 	for(var i = 0; i < 10; i++){
 		var shoeType = getShoeType();

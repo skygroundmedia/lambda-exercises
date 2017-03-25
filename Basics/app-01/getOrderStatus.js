@@ -1,15 +1,15 @@
 var faker = require('faker');
 
-exports.handler = function(event, context){
-	var order = {};
-	order.id = event.orderId;
-	order.name = getName();
+exports.handler = (event, context, callback) => {
+	var order     = {};
+	order.id      = event.orderId;
+	order.name    = getName();
 	order.address = getShippingAddress();
-	order.city = getShippingCity();
-	order.state = getShippingState();
-	order.phone = getPhone();
+	order.city    = getShippingCity();
+	order.state   = getShippingState();
+	order.phone   = getPhone();
 	order.shipMethod = getShipMethod();
-	order.price = getPrice();
+	order.price   = getPrice();
 	
 	//Return the order from the lambda function
 	context.succeed(order);

@@ -58,7 +58,12 @@ namespace('app', function () {
 	desc('Archive app for upload.');
 	task('archive', { async: true }, function(config) {
 		//Exclude hidden files, single isolated files, and specific node_modules then concatenate them
-		var excludes = ['-x .\* -x "package.json"', '-x "Jakefile.js"', '-x \*.md', '-x "node_modules/dotenv\*"'].join(" ")
+		var excludes = [
+			'-x .\*', 
+			'-x "package.json"', 
+			'-x "Jakefile.js"', 
+			'-x \*.md', 
+			'-x "node_modules/dotenv\*"'].join(" ")
 		//Recursively Zip everything with exception to anything within excludes
 		var cmds = [ util.format('zip -r %s * %s', config.app, excludes) ];
 		//Set "printStdout" to "true" if you want to see the stack trace

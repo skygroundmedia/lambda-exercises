@@ -10,7 +10,7 @@ If you're unfamiliar with AWS Lambda, [read this tutorial first](http://www.chri
 
 # Workflow
 
-My process is to create Lambda functions on my local computer. Using Node Package Manager, I am installing special libraries such as ```faker``` and ```lodash``` which means that I cannot copy and paste the code directly into the Lambda console. Instead, I am zipping up the Javascript files and uploading them to AWS S3. From there, I am linking the new Lambda functions to the .zip file.
+My development process starts off with me writing NodeJS functions on my local computer. Since I am using NPM modules ```faker``` and ```lodash```, I cannot copy and paste the code directly into the Lambda Dashboard. Therefore, I am zipping up the Javascript files and uploading them to an AWS S3 Bucket. From there, I assign the new Lambda functions to the .zip file.
 
 
 
@@ -20,17 +20,17 @@ My process is to create Lambda functions on my local computer. Using Node Packag
 
 You need to first do a few things to get started.  You must:
 
-* Install AWS Client either through [Homebrew](http://www.chrisjmendez.com/2017/02/18/aws-installing-aws-client-using-homebrew/) or [Manually](http://www.chrisjmendez.com/2017/02/17/aws-installing-aws-client-manually/)
+1. Install AWS Client either through [Homebrew](http://www.chrisjmendez.com/2017/02/18/aws-installing-aws-client-using-homebrew/) or [Manually](http://www.chrisjmendez.com/2017/02/17/aws-installing-aws-client-manually/)
 * Create a user and permissions to use Lambda. You can learn more by reading the ["Getting Started"](http://www.chrisjmendez.com/2017/02/19/aws-lambda-on-osx/) section.
 * Install NodeJS either through [Homebrew](http://blog.teamtreehouse.com/install-node-js-npm-mac) or [Manually](https://nodejs.org/en/)
 
 
 
-## Step 2 - Install ```npm``` Jake
+## Step 2 - Install NPM Jake
 
 This project relies on [Jake](https://www.npmjs.com/package/jake) to archive and upload files to AWS S3. Jake is similar to [Ruby Rake](http://www.chrisjmendez.com/2016/07/31/rails-5-tasks/) or [Java Ant](http://www.javaworld.com/article/2076208/java-app-dev/automate-your-build-process-using-java-and-ant.html). It helps you create command-lines that complete tedious tasks.
 
-I'm installing Jake globally –and not as an ```npm``` ```devDependency```– so that we don't package up any unnecessary dependencies to S3. 
+I'm installing Jake globally –and not as an ```npm``` ```devDependency```– so that we don't pollute the ```node_modules``` directory we will upload to S3. 
 
 ```language-powerbash
 npm install -g jake
@@ -40,16 +40,25 @@ npm install -g jake
 
 ## Step 3 - Install 3rd party libraries
 
+This project also relies on [dotenv]() to store app specific credentials. Here's how to configure the app to work for your specific project.
+
 Change directory:
 ```language-powerbash
 cd ./path/to/Basics/app-01/
 ```
 
+Create a ```.env``` file
+```
+APP=name_of_zip_file
+BUCKET=name_of_s3_bucket
+AWSCLI_PROFILE=name_of_awscli_profile
+```
+
+
 Install any external libraries found within ```package.json```
 ```language-powerbash
 npm install
 ```
-
 
 
 
@@ -61,10 +70,10 @@ npm install
 
 Since our app is using 3rd party NodeJS libraries, we cannot copy and paste our Lambda code to the browser directly. Instead, we must archive the files into .zip and upload them using the ```aws``` client.
 
-You can run the ```jake``` app which will bundles the files within a .zip and upload it to AWS S3. 
+You can run the ```jake``` command which will bundle the files within a .zip and upload it to AWS S3. 
 
 ```language-powerbash
-jake default[name_of_zip,name_of_s3_bucket,name_of_awscli_profile]
+jake
 ```
 
 *Pay special attention to the fact that there are no spaces between params.*

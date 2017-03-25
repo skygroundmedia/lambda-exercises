@@ -13,36 +13,44 @@ task('default', { async: true }, function() {
 	}
 
 	console.log('Jake Start.');
-	function archive(){
+	function archive(config){
 		var task = jake.Task['app:archive'];
-		task.addListener("start", function(){
-			console.log("Archive Start.");
-		})
-		task.addListener("complete", function(){
-			console.log("Archive Complete.");
-			upload()
-		})
-		task.addListener("error", function(e){
-			console.log("Archive Error: ", e.message, e.code);
-		})
-		task.invoke.apply(task, [config]);
+			task.addListener("start", function(){
+				console.log("Archive Start.");
+			})
+			task.addListener("complete", function(){
+				console.log("Archive Complete.");
+				upload(config);
+			})
+			task.addListener("error", function(e){
+				console.log("Archive Error: ", e.message, e.code);
+			})
+			task.invoke.apply(task, [config]);
 	}
 
-	function upload(){
+	function upload(config){
 		var task = jake.Task['app:upload'];
-		task.addListener("start", function(){
-			console.log("Upload Start.")
-		});
-		task.addListener("complete", function(){
-			console.log("Upload Complete.")
-			complete();
-		})
-		task.addListener("error", function(e){
-			console.log("Upload Error: ", e.message, e.code);
-		})
-		task.invoke.apply(task, [config])
+			task.addListener("start", function(){
+				console.log("Upload Start.")
+			});
+			task.addListener("complete", function(){
+				console.log("Upload Complete.")
+				complete();
+			})
+			task.addListener("error", function(e){
+				console.log("Upload Error: ", e.message, e.code);
+			})
+			task.invoke.apply(task, [config])
 	}  
-	archive();
+	if(config.app && config.bucket && config.profile){
+		archive(config);
+	}else{
+		var example = `
+		APP=name_of_zip_file
+		BUCKET=name_of_s3_bucket
+		AWSCLI_PROFILE=name_of_awscli_profile`
+		console.log("Please make sure you have a .env file that includes these variables: ", example)
+	}
 });
 
 

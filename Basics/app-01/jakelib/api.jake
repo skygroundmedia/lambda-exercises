@@ -15,9 +15,9 @@ jake api:getAll[prod]
 * ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **/
 var util = require('util');
 var apiConfig = {
-	development: "http://dev.domain.ext/path/",
-	staging:     "http://staging.domain.ext/path/",
-	production:  "http://prod.domain.ext/path/"
+	development: process.env.API_DEV,
+	staging:     process.env.API_STAGING,
+	production:  process.env.API_PROD
 }
 
 namespace('api', function () {
@@ -29,24 +29,27 @@ namespace('api', function () {
 		jake.exec(cmds, { printStdout: false }, function(){
 			complete();
 		})
-	});
-	
-	//Return the URL based on the specific staging environment
-	function getURLPath(env){
-		var url = ""
-		switch(env){
-			//Staging
-		case "staging":
-			url = apiConfig.staging
-			break;
-			//Production 
-		case "prod":
-			url = apiConfig.production
-			break;
-			//By default, it's always development
-		default:
-			url = apiConfig.development
-		}
-		return url
-	}
+	});	
 });
+
+//Return the URL based on the staging environment
+function getURLPath(env){
+	var url = ""
+	switch(env){
+	case "stag":
+	case "staging":
+		url = apiConfig.staging
+		break;
+	case "prod":
+	case "production":
+		url = apiConfig.production
+		break;
+	case "dev":
+	case "development":
+	default:
+		url = apiConfig.development
+	}
+	console.log("Environment:", env, " URL:", url );
+	return url
+}
+

@@ -65,5 +65,3 @@ task('default', { async: true }, function() {
 	}
 });
 
-
-

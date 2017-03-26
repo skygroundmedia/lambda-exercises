@@ -24,12 +24,36 @@ namespace('api', function () {
 	desc('Get All Orders. Ex: jake api:getAll[prod]');
 	task('getAll', { async: true }, function(env) {
 		var url  = getURLPath(env);
-		var cmds = [ util.format('curl %s', url) ];
+		var path = "guitars/"
+		var cmds = [ util.format('curl %s%s', url, path) ];
 		console.log(cmds)
 		jake.exec(cmds, { printStdout: false }, function(){
 			complete();
 		})
-	});	
+	});
+	
+	desc('Get item detail based on orderId.');
+	task('getItemDetail', { async: true }, function(env) {
+		var url  = getURLPath(env);
+		var path = util.format("guitars/%s", "123456")
+		var cmds = [ util.format('curl %s%s', url, path) ];
+		console.log(cmds)
+		jake.exec(cmds, { printStdout: false }, function(){
+			complete();
+		})
+	});
+	
+	desc('Get order');
+	//curl POST Request https://superuser.com/a/149335
+	task('getOrder', { async: true }, function(env) {
+		var url  = getURLPath(env);
+		var path = "order/"
+		var cmds = [ util.format('curl --request POST %s%s', url, path) ];
+		console.log(cmds)
+		jake.exec(cmds, { printStdout: false }, function(){
+			complete();
+		})
+	});
 });
 
 //Return the URL based on the staging environment
@@ -52,4 +76,3 @@ function getURLPath(env){
 	console.log("Environment:", env, " URL:", url );
 	return url
 }
-

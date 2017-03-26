@@ -13,9 +13,9 @@ var util = require('util');
 namespace('app', function () {
 	desc('Archive app for upload.');
 	task('archive', { async: true }, function(config) {
-		//Exclude hidden files, single isolated files, and specific node_modules then concatenate them
+		//Itemize the files you're excluding then concatenate them
 		var excludes = [
-			//Hidden files
+			//Hidden files (i.e. .gitignore, .env)
 			'-x .\*',
 			//NPM package file
 			'-x "package.json"', 
@@ -38,7 +38,7 @@ namespace('app', function () {
 		})
 	});
 
-	desc('Upload a local .zip file to an AWS S3 bucket.');
+	desc('Upload (aka copy) local .zip to an AWS S3 bucket.');
 	task('upload', { async: true }, function(config) {
 		var cmds = [ util.format('aws s3 cp %s.zip s3://%s --profile %s', config.app, config.bucket, config.profile) ];
 		//Set "printStdout" to "true" if you want to see the stack trace

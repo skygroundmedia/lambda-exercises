@@ -6,8 +6,19 @@ Description: API requests made to an AWS API Gateway.
 It is assumed that within your AWS API Gateway, you 
 might have a single function written for three stages: 
 dev, staging, and prod.
+
+Example: 
+
+//Submit a CURL request to the Productin API
+jake api:getAll[prod]
+
 * ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **/
 var util = require('util');
+var apiConfig = {
+	development: "http://dev.domain.ext/path/",
+	staging:     "http://staging.domain.ext/path/",
+	production:  "http://prod.domain.ext/path/"
+}
 
 namespace('api', function () {
 	desc('Get All Orders. Ex: jake api:getAll[prod]');
@@ -26,15 +37,15 @@ namespace('api', function () {
 		switch(env){
 			//Staging
 		case "staging":
-			url = "http://staging.domain.ext/path/"
+			url = apiConfig.staging
 			break;
 			//Production 
 		case "prod":
-			url = "http://prod.domain.ext/path/"
+			url = apiConfig.production
 			break;
 			//By default, it's always development
 		default:
-			url = "http://dev.domain.ext/path/"
+			url = apiConfig.development
 		}
 		return url
 	}

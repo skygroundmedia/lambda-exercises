@@ -21,36 +21,37 @@ var apiConfig = {
 }
 
 namespace('api', function () {
-	desc('Get All Orders. Ex: jake api:getAll[prod]');
+	desc('GET All Orders. Ex: jake api:getAll[prod]');
 	task('getAll', { async: true }, function(env) {
 		var url  = getURLPath(env);
 		var path = "guitars/"
 		var cmds = [ util.format('curl %s%s', url, path) ];
 		console.log(cmds)
-		jake.exec(cmds, { printStdout: false }, function(){
+		jake.exec(cmds, { printStdout: true, printStderr: true }, function(){
 			complete();
 		})
 	});
 	
-	desc('Get item detail based on orderId.');
+	desc('GET item detail based on orderId.');
 	task('getItemDetail', { async: true }, function(env) {
 		var url  = getURLPath(env);
-		var path = util.format("guitars/%s", "123456")
+		var orderId = "123456";
+		var path = "guitars/" + orderId;
 		var cmds = [ util.format('curl %s%s', url, path) ];
 		console.log(cmds)
-		jake.exec(cmds, { printStdout: false }, function(){
+		jake.exec(cmds, { printStdout: true, printStderr: true }, function(){
 			complete();
 		})
 	});
 	
-	desc('Get order');
+	desc('POST order');
 	//curl POST Request https://superuser.com/a/149335
 	task('getOrder', { async: true }, function(env) {
 		var url  = getURLPath(env);
 		var path = "order/"
 		var cmds = [ util.format('curl --request POST %s%s', url, path) ];
 		console.log(cmds)
-		jake.exec(cmds, { printStdout: false }, function(){
+		jake.exec(cmds, { printStdout: true, printStderr: true }, function(){
 			complete();
 		})
 	});
@@ -76,3 +77,4 @@ function getURLPath(env){
 	console.log("Environment:", env, " URL:", url );
 	return url
 }
+

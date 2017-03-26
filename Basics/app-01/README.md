@@ -65,6 +65,17 @@ npm install
 ---
 
 
+## Reviewing existing Jake tasks
+
+If you want to see what tasks have been specifically created for this project, run this command. 
+```language-powerbash
+jake -T
+```
+
+
+---
+
+
 
 ## Using Jake for Deployment
 

@@ -12,7 +12,7 @@ The task below titled "default" simply
 require('dotenv').config({path: ''});
 
 desc('Archive app and upload to S3.');
-task('default', { async: true }, function() {
+task('default', ["app:init"], { async: true }, function() {
 	console.log('Jake Start.');
 	var config = {
 		//Name of this .zip file

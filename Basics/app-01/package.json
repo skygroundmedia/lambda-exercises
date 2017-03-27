@@ -12,6 +12,7 @@
     "faker": "^4.1.0"
   },
   "devDependencies": {
-    "dotenv": "^4.0.0"
+    "dotenv": "^4.0.0",
+    "request": "^2.81.0"
   }
 }

@@ -13,7 +13,9 @@ Example:
 jake api:getAll[prod]
 
 * ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **/
-var util = require('util');
+var util  = require('util')
+, request = require('request')
+
 var apiConfig = {
 	development: process.env.API_DEV,
 	staging:     process.env.API_STAGING,
@@ -46,14 +48,20 @@ namespace('api', function () {
 	
 	desc('POST order');
 	//curl POST Request https://superuser.com/a/149335
-	task('getOrder', { async: true }, function(env) {
-		var url  = getURLPath(env);
-		var path = "order/"
-		var cmds = [ util.format('curl --request POST %s%s', url, path) ];
-		console.log(cmds)
-		jake.exec(cmds, { printStdout: true, printStderr: true }, function(){
-			complete();
-		})
+	task('getOrder', { async: true }, function(env) {		
+		request.post({
+			headers: {'content-type' : 'application/x-www-form-urlencoded'},
+			url:     getURLPath(env) + 'order/',
+			body:    JSON.stringify({ orderId: "abcd123"})
+		}, function(err, response, data){
+			if(err) {
+				console.log( "api:getOrder", err )
+				cb(err);
+			}
+			if( data ){
+				console.log(JSON.parse(data))
+			}
+		});
 	});
 });
 

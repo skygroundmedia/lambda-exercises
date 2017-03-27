@@ -26,12 +26,16 @@ namespace('app', function () {
 			//HTTP Request Simulator
 			'-x \*.paw',
 			//Jakefile tasks
-			'-x "jakelib\*"',
-			//NPM dotenv is for local use only
-			'-x "node_modules/dotenv\*"'
+			'-x "jakelib\*"'
 		].join(" ")
-		//Recursively Zip everything with exception to anything within excludes
-		var cmds = [ util.format('zip -r %s * %s', config.app, excludes) ];
+		var cmds = [
+			//Remove all node modules including -devDependencies
+			"rm -r node_modules",
+			//Only install the production-ready modules
+			"npm install --production",
+			//Recursively Zip everything with exception to anything within excludes
+			util.format('zip -r %s * %s', config.app, excludes)
+		];
 		//Set "printStdout" to "true" if you want to see the stack trace
 		jake.exec(cmds, { printStdout: false }, function(){
 			complete();

@@ -26,13 +26,13 @@ namespace('api', function () {
 	task('getAll', { async: true }, function(env) {
 		//A. Get the URL path based on your dev environment: dev, stating, prod
 		var url  = getURLPath(env);
-		var path = "guitars/"
-		//B. We are using curl to show how to do this manually
-		var cmds = [ util.format('curl %s%s', url, path) ];
-		console.log(cmds)
-		jake.exec(cmds, { printStdout: true, printStderr: true }, function(){
-			complete();
-		})
+		var path = url + "guitars/";
+		//B. Use NPM Request to construct a GET request
+		request.get({ url: path, json: true }, function(err, res){
+			if(err) throw err
+			console.log(res.body)
+		});
+    
 	});
 	
 	desc('GET item detail based on orderId.');
@@ -47,7 +47,7 @@ namespace('api', function () {
 			console.log(res.body)
 		});
 	});
-	
+
 	desc('POST order');
 	task('getOrder', { async: true }, function(env) {		
 		//A. Create URL
@@ -68,7 +68,10 @@ namespace('api', function () {
 
 //Return the URL based on the staging environment
 function getURLPath(env){
-	var url = ""
+	var url = "";
+
+  if(!apiConfig) throw Error("apiConfig " + apiConfig + ". Please review .env.");
+  
 	switch(env){
 	case "stag":
 	case "staging":
@@ -86,3 +89,4 @@ function getURLPath(env){
 	console.log("Environment:", env, " URL:", url );
 	return url
 }
+

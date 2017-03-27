@@ -32,7 +32,7 @@ namespace('app', function () {
 			//Remove all node modules including -devDependencies
 			"rm -r node_modules",
 			//Only install the production-ready modules
-			"npm install --production",
+			"npm install --only=production",
 			//Recursively Zip everything with exception to anything within excludes
 			util.format('zip -r %s * %s', config.app, excludes)
 		];
@@ -50,4 +50,15 @@ namespace('app', function () {
 			complete();
 		});
 	});
+  
+
+	desc('Reset the environment for development mode.');
+	task('reset', { async: true }, function(config) {
+		var cmds = [ "npm install --only=dev" ];
+		//Set "printStdout" to "true" if you want to see the stack trace
+		jake.exec(cmds, { printStdout: false }, function () {
+			complete();
+		});
+	});
+  
 });

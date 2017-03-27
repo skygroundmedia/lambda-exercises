@@ -13,9 +13,8 @@ Example:
 jake api:getAll[prod]
 
 * ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **/
-var util  = require('util')
-, request = require('request')
-
+var util    = require('util')
+var request = require('request')
 var apiConfig = {
 	development: process.env.API_DEV,
 	staging:     process.env.API_STAGING,
@@ -38,26 +37,23 @@ namespace('api', function () {
 	task('getItemDetail', { async: true }, function(env) {
 		var url  = getURLPath(env);
 		var orderId = "123456";
-		var path = "guitars/" + orderId;
-		var cmds = [ util.format('curl %s%s', url, path) ];
-		console.log(cmds)
-		jake.exec(cmds, { printStdout: true, printStderr: true }, function(){
-			complete();
-		})
+		var path = url + "guitars/" + orderId;
+		request.get({ url: path, json: true }, function(err, res){
+			if(err) throw err
+			console.log(res.body)
+		});
 	});
 	
 	desc('POST order');
 	//curl POST Request https://superuser.com/a/149335
 	task('getOrder', { async: true }, function(env) {		
+		var orderId = "abcd123";
 		request.post({
-			headers: {'content-type' : 'application/x-www-form-urlencoded'},
+			//headers: {'content-type' : 'application/x-www-form-urlencoded'},
 			url:     getURLPath(env) + 'order/',
-			body:    JSON.stringify({ orderId: "abcd123"})
-		}, function(err, response, data){
-			if(err) {
-				console.log( "api:getOrder", err )
-				cb(err);
-			}
+			body:    JSON.stringify({ orderId: orderId})
+		}, function(err, res, data){
+			if(err) throw err;
 			if( data ){
 				console.log(JSON.parse(data))
 			}

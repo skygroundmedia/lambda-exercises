@@ -16,77 +16,83 @@ jake api:getAll[prod]
 var util    = require('util')
 var request = require('request')
 var apiConfig = {
-	development: process.env.API_DEV,
-	staging:     process.env.API_STAGING,
-	production:  process.env.API_PROD
+  development: process.env.API_DEV,
+  staging:     process.env.API_STAGING,
+  production:  process.env.API_PROD,
+  key:         process.env.API_KEY
 }
 
 namespace('api', function () {
-	desc('GET All Orders. Ex: jake api:getAll[prod]');
-	task('getAll', { async: true }, function(env) {
-		//A. Get the URL path based on your dev environment: dev, stating, prod
-		var url  = getURLPath(env);
-		var path = url + "guitars/";
-		//B. Use NPM Request to construct a GET request
-		request.get({ url: path, json: true }, function(err, res){
-			if(err) throw err
-			console.log(res.body)
-		});
+  desc('GET All Orders. Requires API_KEY. Ex: jake api:getAll[prod]');
+  task('getAll', { async: true }, function(env) {
+    //A. Get the URL path based on your dev environment: dev, stating, prod
+    var url  = getURLPath(env);
+    var path = url + "guitars/";
+    //B. Use NPM Request to construct a GET request
+    request.get({ url: path, json: true }, function(err, res){
+      if(err) throw err
+        console.log(res.body)
+    });
     
-	});
+  });
 	
-	desc('GET item detail based on orderId.');
-	task('getItemDetail', { async: true }, function(env) {
-		//A. Create URL
-		var url  = getURLPath(env);
-		var orderId = "123456";
-		var path = url + "guitars/" + orderId;
-		//B. Use NPM Request to construct a GET request
-		request.get({ url: path, json: true }, function(err, res){
-			if(err) throw err
-			console.log(res.body)
-		});
-	});
+  desc('GET item detail based on id. Requires API_KEY. Ex: jake api:getItemDetail[dev,0000]');
+  task('getItemDetail', { async: true }, function(env, id) {
+    //A. Create URL
+    var url  = getURLPath(env);
+    var path = url + "guitars/" + id;
+    
+    //B. Use NPM Request to construct a GET request
+    if(!apiConfig.key) throw Error("Error: API_KEY required within .env.")      
+    request.get({ 
+      headers: {'x-api-key' : apiConfig.key },
+      url: path, 
+      json: true 
+    }, function(err, res){
+      if(err) throw err
+        console.log(res.body)
+    });
+  });
 
-	desc('POST order');
-	task('getOrder', { async: true }, function(env) {		
-		//A. Create URL
-		var orderId = "abcd123";
-		//B. Use NPM Request to construct a POST request
-		request.post({
-			//headers: {'content-type' : 'application/x-www-form-urlencoded'},
-			url:     getURLPath(env) + 'order/',
-			body:    JSON.stringify({ orderId: orderId})
-		}, function(err, res, data){
-			if(err) throw err;
-			if( data ){
-				console.log(JSON.parse(data))
-			}
-		});
-	});
+  desc('POST order');
+  task('getOrder', { async: true }, function(env, id) {    
+    var id = id
+    //B. Use NPM Request to construct a POST request
+    if(!apiConfig.key) throw Error("Error: API_KEY required within .env.");
+    request.post({
+      headers: {'x-api-key' : apiConfig.key },
+      url:     getURLPath(env) + 'order/',
+      body:    JSON.stringify({ orderId: id})
+    }, function(err, res, data){
+      if(err) throw err;
+      if( data ){
+        console.log(JSON.parse(data))
+      }
+    });
+  });
 });
 
 //Return the URL based on the staging environment
 function getURLPath(env){
-	var url = "";
+  var url = "";
 
   if(!apiConfig) throw Error("apiConfig " + apiConfig + ". Please review .env.");
   
-	switch(env){
-	case "stag":
-	case "staging":
-		url = apiConfig.staging
-		break;
-	case "prod":
-	case "production":
-		url = apiConfig.production
-		break;
-	case "dev":
-	case "development":
-	default:
-		url = apiConfig.development
-	}
-	console.log("Environment:", env, " URL:", url );
-	return url
+  switch(env){
+    case "stag":
+    case "staging":
+      url = apiConfig.staging
+      break;
+    case "prod":
+    case "production":
+      url = apiConfig.production
+      break;
+    case "dev":
+    case "development":
+    default:
+      url = apiConfig.development
+  }
+  console.log("Environment:", env, " URL:", url );
+  return url
 }
 

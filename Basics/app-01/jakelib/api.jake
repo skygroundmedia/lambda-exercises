@@ -42,23 +42,25 @@ namespace('api', function () {
     var url  = getURLPath(env);
     var path = url + "guitars/" + id;
     
-    //B. Use NPM Request to construct a GET request
+    //A. API_KEY Check
     if(!apiConfig.key) throw Error("Error: API_KEY required within .env.")      
+    //B. Use NPM Request to construct a GET request
     request.get({ 
       headers: {'x-api-key' : apiConfig.key },
       url: path, 
       json: true 
     }, function(err, res){
       if(err) throw err
-        console.log(res.body)
+        console.log(res.body);
     });
   });
 
   desc('POST order');
   task('getOrder', { async: true }, function(env, id) {    
     var id = id
+    //A. API_KEY Check
+    if(!apiConfig.key) throw Error("Check API_KEY param within .env.");
     //B. Use NPM Request to construct a POST request
-    if(!apiConfig.key) throw Error("Error: API_KEY required within .env.");
     request.post({
       headers: {'x-api-key' : apiConfig.key },
       url:     getURLPath(env) + 'order/',
@@ -66,7 +68,7 @@ namespace('api', function () {
     }, function(err, res, data){
       if(err) throw err;
       if( data ){
-        console.log(JSON.parse(data))
+        console.log(JSON.parse(data));
       }
     });
   });
@@ -76,7 +78,7 @@ namespace('api', function () {
 function getURLPath(env){
   var url = "";
 
-  if(!apiConfig) throw Error("apiConfig " + apiConfig + ". Please review .env.");
+  if(!apiConfig) throw Error("Check API_KEY param within .env.");
   
   switch(env){
     case "stag":
@@ -95,4 +97,3 @@ function getURLPath(env){
   console.log("Environment:", env, " URL:", url );
   return url
 }
-

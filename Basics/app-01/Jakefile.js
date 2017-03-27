@@ -25,7 +25,9 @@ task('default', { async: true }, function() {
   init(config);
 });
 
-
+/*
+  Workflow
+*/
 function archive(config){
   var task = jake.Task['app:archive'];
     task.addListener("start", onStart.bind(null,"archive"))
@@ -66,7 +68,9 @@ function init(config){
   }
 }
 
-
+/*
+  Event Handlers
+*/
 function onStart(callee){
   console.log(arguments.callee.name, ": ", callee);
 }

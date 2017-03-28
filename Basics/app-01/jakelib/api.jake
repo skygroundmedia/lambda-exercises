@@ -27,13 +27,12 @@ namespace('api', function () {
   task('getAll', { async: true }, function(env) {
     //A. Get the URL path based on your dev environment: dev, stating, prod
     var url  = getURLPath(env);
-    var path = url + "guitars/";
+    var path = url + "all/";
     //B. Use NPM Request to construct a GET request
     request.get({ url: path, json: true }, function(err, res){
       if(err) throw err
         console.log(res.body)
     });
-    
   });
 	
   desc('GET item detail based on id. Requires API_KEY. Ex: jake api:getItemDetail[dev,0000]');

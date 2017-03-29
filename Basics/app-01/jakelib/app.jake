@@ -54,11 +54,13 @@ namespace('app', function () {
 
 	desc('Reset the environment for development mode.');
 	task('reset', { async: true }, function(config) {
-		var cmds = [ "npm install --only=dev" ];
+		var cmds = [ 
+			"rm -r node_modules",
+			"npm install --only=dev" 
+		];
 		//Set "printStdout" to "true" if you want to see the stack trace
 		jake.exec(cmds, { printStdout: false }, function () {
 			complete();
 		});
 	});
-  
 });

@@ -114,4 +114,6 @@ jake
 
 * [Using Jake](https://howtonode.org/intro-to-jake)
 * [Jake Docs](https://www.npmjs.com/package/jake)
-
+* [Faker JS](https://github.com/marak/Faker.js/)
+* [AWS JS SDK API](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/) is great if you prefer an NPM library.
+* [AWS CLI Reference](http://docs.aws.amazon.com/cli/latest/reference/iam/create-user.html) is great if you prefer the command line.

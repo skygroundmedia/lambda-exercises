@@ -2,17 +2,41 @@
   "name": "lambda_ex1",
   "version": "1.0.0",
   "description": "",
+  "homepage": "",
+  "author": "Chris Mendez @chrismendezinla",
+  "files": [
+    "lib"
+  ],
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "keywords": [
+    "lambda",
+    "aws",
+    "aws-sdk"
+  ],
+  "devDependencies": {
+    "aws-sdk": "^2.34.0",
+    "dotenv": "^4.0.0",
+    "nsp": "^2.6.3",
+    "request": "^2.81.0"
   },
-  "author": "Chris Mendez",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1 && jest",
+    "prepublish": "nsp check",
+    "pretest": "eslint . --ignore-path .gitignore --fix"
+  },
   "license": "ISC",
   "dependencies": {
     "faker": "^4.1.0"
   },
-  "devDependencies": {
-    "dotenv": "^4.0.0",
-    "request": "^2.81.0"
+  "eslintConfig": {
+    "extends": "xo-space",
+    "env": {
+      "jest": true,
+      "node": true
+    }
+  },
+  "repository": "https://github.com/chrisjmendez/lambda-exercises.git",
+  "jest": {
+    "testEnvironment": "node"
   }
 }

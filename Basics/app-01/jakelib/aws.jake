@@ -22,46 +22,68 @@ var config = {
 }
 
 namespace('aws', function () {
-	
-	desc('IAM: Create new user. Ex: jake aws:createUser[fake-username]');
+
+	/*
+		AWS Command-line
+	*/	
+	desc('Check your AWS CLI Profile.');
 	task('checkProfile', { async: true }, { breakOnError: true }, function() {
 		if(!config.profile) fail("No awscli profile found within .env. Learn more: https://goo.gl/U2HiAs");
 		complete();
-	});	
+	});
 
-	desc('IAM: Create new user. Ex: jake aws:createUser[fake-username]');
+
+	/*
+		Users
+	*/
+	desc('Create new user. Ex: jake aws:createUser[fake-username]');
 	task('createUser', ['aws:checkProfile'], { async: true }, function(username) {
 		if(!username) fail("Please include a username.");
 		var cmds = [ util.format('aws iam create-user --user-name %s --profile %s', username, config.profile) ];
-		jake.exec(cmds, { printStdout: true }, function(){
-			complete();
-		})
+		jake.exec(cmds, { printStdout: true })
 	});
 
-	desc('Create a new Role');
-	task('createRole', { async: true }, function() {
-		
-	});
-
-	desc('Get user info');
-	task('getUser', { async: true }, function(username) {
+	desc('Get details on a single User.');
+	task('getUser', ['aws:checkProfile'], { async: true }, function(username) {
+		if(!username) fail("Please include a username.");
 		var cmds = [ util.format('aws iam get-user --user-name %s --profile %s', username, config.profile) ];
 		jake.exec(cmds, { printStdout: true })
 	});
 	
+	desc('Get a list of Users.');
+	task('getUsers', ['aws:checkProfile'], { async: true }, function() {
+		var cmds = [ util.format('aws iam list-users --profile %s', config.profile) ];
+		jake.exec(cmds, { printStdout: true });
+	});
+
+
+	/*
+		Roles
+	*/	
+	desc('Create a new Role');
+	task('createRole', ['aws:checkProfile'], { async: true }, function() {
+	});
+
+
+	/*
+		Policy Files
+	*/	
 	desc('Create a Policy File.');
-	task('createPolicy', { async: true }, function(policy_name, policy_document, description) {
-		var cmds = [ util.format('aws iam create-policy --policy-name %s --policy-document %s --description %s --profile %s', policy_name, policy_document, desciption, config.profile) ];
-		jake.exec(cmds, { printStdout: true }, function(){
-			complete();
-		})		
+	task('createPolicy', ['aws:checkProfile'], { async: true }, function(policy_name, policy_json, description) {
+		if(!policy_name || !policy_json || !description) fail("Please include a policy name, a json file and a description.");
+		var cmds = [ util.format('aws iam create-policy --policy-name %s --policy-document %s --description %s --profile %s', policy_name, policy_json, desciption, config.profile) ];
+		jake.exec(cmds, { printStdout: true });
 	});	
 
-	desc('Create Group');
-	task('getGroup', { async: true }, function() {    
-	});
+
+	/*
+		Groups
+	*/
+	desc('Create a Group.');
+	task('createGroup', ['aws:checkProfile'], { async: true }, function(user) {
+	});	
 	
 	desc('Add User to a Group');
-	task('addToGroup', { async: true }, function(user) {
+	task('addToGroup', ['aws:checkProfile'], { async: true }, function(user) {
 	});	
 });

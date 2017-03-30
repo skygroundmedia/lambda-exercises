@@ -25,6 +25,8 @@ namespace('app', function () {
 			'-x \*.md',
 			//HTTP Request Simulator
 			'-x \*.paw',
+			//AWS Policy Files
+			'-x "aws_policies\*"',
 			//Jakefile tasks
 			'-x "jakelib\*"'
 		].join(" ")

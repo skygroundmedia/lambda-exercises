@@ -19,11 +19,14 @@ the roles to Lambda functions.
 var util  = require('util');
 var S3    = require('aws-sdk');
 
-var config = {
-	profile: process.env.AWSCLI_PROFILE		
-}
+// This comes from .env file
+var config = { profile: process.env.AWSCLI_PROFILE }
+
 
 namespace('aws', function () {
+	// This is for specific commands
+	var params = require('../aws_policies/params');
+	
 	/* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
 	AWS Command-line
 	* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **/
@@ -33,11 +36,14 @@ namespace('aws', function () {
 		complete();
 	});
 
+
+
 	/* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
 	Users
-	http://docs.aws.amazon.com/cli/latest/reference/iam/list-users.html
 	* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **/
+
 	desc('Create new user. Ex: jake aws:createUser[fake-username]');
+	//http://docs.aws.amazon.com/cli/latest/reference/iam/create-user.html
 	task('createUser', ['aws:checkProfile'], { async: true }, function(username) {
 		if(!username) fail("Please include a username.");
 		var cmds = [ util.format('aws iam create-user --user-name %s --profile %s', username, config.profile) ];
@@ -45,6 +51,7 @@ namespace('aws', function () {
 	});
 
 	desc('Get details on a single User.');
+	//http://docs.aws.amazon.com/cli/latest/reference/iam/get-user.html
 	task('getUser', ['aws:checkProfile'], { async: true }, function(username) {
 		if(!username) fail("Please include a username.");
 		var cmds = [ util.format('aws iam get-user --user-name %s --profile %s', username, config.profile) ];
@@ -52,82 +59,89 @@ namespace('aws', function () {
 	});
 	
 	desc('List of Users.');
+	//http://docs.aws.amazon.com/cli/latest/reference/iam/list-users.html
 	task('listUsers', ['aws:checkProfile'], { async: true }, function() {
 		var cmds = [ util.format('aws iam list-users --profile %s', config.profile) ];
 		jake.exec(cmds, { printStdout: true });
 	});
 
 
+
 	/* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
 	Roles
 	Description: You need 2 policy files: TRUST.json + PERMISSION.json
 	* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **/
-	desc('Create A Lambda role.');
-	task('createLambdaRole', ['aws:checkProfile'], { async: true }, function() {
-	});	
 
-	desc('Create an API Gateway role.');
-	task('createLambdaRole', ['aws:checkProfile'], { async: true }, function() {
-	});	
-	
-	desc('Create a new Role. Ex: aws:createRole[myapp-apigateway-role,aws_policies/trust-role-policy.json] ');
-	task('createRole', ['aws:checkProfile'], { async: true }, function(role_name, trust_policy, policy_name, permissions_policy) {
-		//You need to explicitely add this policy file when you're doing this manually.
-		var trust_policy       = "file://" + trust_policy;
-		var cmds = [util.format('aws iam create-role --role-name %s --assume-role-policy-document %s --profile %s', role_name, trust_policy, config.profile)];
+	desc('Create a new Role.');
+	//http://docs.aws.amazon.com/cli/latest/reference/iam/create-role.html
+	task('createRole', ['aws:checkProfile'], { async: true }, function() {
+		//You need to explicitely add a TRUST policy file when you're doing this manually.
+		var cmds = [util.format('aws iam create-role --role-name %s --assume-role-policy-document file://%s --profile %s', params.role.role_name, params.role.trust_policy, config.profile)];
 		jake.exec(cmds, { printStdout: true }, function(){
 			//Now that you've created the role, time to insert an INLINE policy file.
-			var permissions_policy = permissions_policy;
-		    var t = jake.Task['aws:putRolePolicy'];
-				t.invoke.apply(t, [role_name, policy_name, permissions_policy]);
+			var t = jake.Task['aws:putRolePolicy'];
+				t.invoke.apply(t, [params.role]);
 		});
+	});
+
+	desc('Delete Role. Ex: aws:deleteRole[name-of-role]');
+	//http://docs.aws.amazon.com/cli/latest/reference/iam/delete-role.html
+	task('deleteRole', ['aws:checkProfile'], { async: true }, function(role_name) {
+		var cmds = [ util.format('aws iam delete-role --role-name %s --profile %s', role_name, config.profile) ];
+		jake.exec(cmds, { printStdout: true });
 	});
 	
 	desc('List Roles.');
+	//http://docs.aws.amazon.com/cli/latest/reference/iam/list-roles.html
 	task('listRoles', ['aws:checkProfile'], { async: true }, function() {
 		var cmds = [ util.format('aws iam list-roles --profile %s', config.profile) ];
 		jake.exec(cmds, { printStdout: true });
 	});
-	
+
+
 
 	/* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
 	Policy Files
 	* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **/
+
 	desc('Create a Policy File.');
-	task('createExecutionPolicy', ['aws:checkProfile'], { async: true }, function(policy_name, policy_json) {
-		if(!policy_name || !policy_json) fail("Please include a policy name, a json file and a description.");		
-		var permissions_policy = "file://" + permissions_policy;
-		var cmds = [ util.format('aws iam create-policy --policy-name %s --policy-document %s --profile %s', policy_name, policy_json, config.profile) ];
+	//http://docs.aws.amazon.com/cli/latest/reference/iam/create-policy.html
+	task('createExecutionPolicy', ['aws:checkProfile'], { async: true }, function(params) {
+		var cmds = [ util.format('aws iam create-policy --policy-name %s --policy-document file://%s --profile %s', params.policy_name, params.policy_json, config.profile) ];
 		jake.exec(cmds, { printStdout: true });
 	});	
 
 
 	desc('Attach a MANAGED policy to an IAM role.');
-	task('attachRolePolicy', ['aws:checkProfile'], { async: true }, function(role_name, policy_name, permissions_policy) {
-		var permissions_policy = "file://" + permissions_policy;
-		var cmds = [util.format('aws iam put-role-policy --role-name %s --policy-name %s --policy-document %s --profile %s', role_name, policy_name, permissions_policy, config.profile)]
-		jake.exec(cmds, { printStdout: true });		
+	//http://docs.aws.amazon.com/cli/latest/reference/iam/attach-role-policy.html
+	task('attachRolePolicy', ['aws:checkProfile'], { async: true }, function(params) {
+		//Embed the permissions policy (as an inline policy)
+		var cmds = [util.format('aws iam attach-role-policy --role-name %s --policy-arn %s --profile %s', params.role_name, params.policy_arn, config.profile)]
+		jake.exec(cmds, { printStdout: true });
 	});	
 	
-	//TODO: FIX THIS
 	desc('Attach an INLINE policy to an IAM role.');
-	task('putRolePolicy', ['aws:checkProfile'], { async: true }, function(role_name, policy_name, permissions_policy) {
+	//http://docs.aws.amazon.com/cli/latest/reference/iam/put-role-policy.html
+	task('putRolePolicy', ['aws:checkProfile'], { async: true }, function(params) {
 		//Embed the permissions policy (as an inline policy)
-		var permissions_policy = "file://" + permissions_policy;
-		var cmds = [util.format('aws iam put-role-policy --role-name %s --policy-name %s --policy-document %s --profile %s', role_name, policy_name, permissions_policy, config.profile)]
+		var cmds = [util.format('aws iam put-role-policy --role-name %s --policy-name %s --policy-document file://%s --profile %s', params.role_name, params.policy_name, params.permissions_policy, config.profile)]
 		jake.exec(cmds, { printStdout: true });		
 	});
+
+
 	
 	/* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
 	Lambda
 	* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **/
 	desc('List Lambda functions');
+	//http://docs.aws.amazon.com/cli/latest/reference/lambda/list-functions.html
 	task('listFunctions', ['aws:checkProfile'], { async: true }, function(user) {
 		var cmds = [ util.format('aws lambda list-functions --profile %s', config.profile) ];
 		jake.exec(cmds, { printStdout: true });
 	});	
 
 	desc('Create a Lambda function');
+	//http://docs.aws.amazon.com/cli/latest/reference/lambda/create-function.html
 	task('createLambda', ['aws:checkProfile'], { async: true }, function(name, role, zip_file, description) {
 		var region   = "us-east-1"
 		var name     = name
@@ -142,6 +156,7 @@ namespace('aws', function () {
 	});
 
 	desc('Get metadata about a function');
+	//http://docs.aws.amazon.com/cli/latest/reference/lambda/get-function.html
 	task('getMetadata', ['aws:checkProfile'], { async: true }, function(name) {
 		var cmds = [ util.format("aws lambda get-function --function-name %s --profile %s", name, config.profile)];
 		jake.exec(cmds, { printStdout: true });
@@ -149,6 +164,7 @@ namespace('aws', function () {
 
 
 	desc('Update a function');
+	//http://docs.aws.amazon.com/cli/latest/reference/lambda/update-function-code.html
 	task('addToGroup', ['aws:checkProfile'], { async: true }, function(name, zip_path) {
 		var name = "helloWorld";
 		var zip  = "./"
@@ -157,6 +173,7 @@ namespace('aws', function () {
 	});	
 	
 	desc('Invoke a function');
+	//http://docs.aws.amazon.com/cli/latest/reference/lambda/invoke-async.html
 	task('addToGroup', ['aws:checkProfile'], { async: true }, function(user) {
 		var name = "helloWorld";
 		var args = "/path/to/file/with/arguments.txt";
@@ -165,43 +182,9 @@ namespace('aws', function () {
 	});
 	
 	desc('Delete a function');
+	//http://docs.aws.amazon.com/cli/latest/reference/lambda/delete-function.html
 	task('deleteFunction', ['aws:checkProfile'], { async: true }, function(name) {
 		var cmds = [ util.format("aws lambda delete-function --function-name %s --profile %s", name, config.profile)];
 		jake.exec(cmds, { printStdout: true });
 	});  
 });
-
-
-function getPolicy(service){
-	var json = ""
-	switch(service){
-	case "lambda":
-		json = {
-			"Version": "2012-10-17",
-			"Statement": [
-				{
-					"Effect": "Allow",
-					"Action": [
-						"apigateway:*"
-					],
-					"Resource": [
-						"arn:aws:logs:*:*:*"
-					]
-				},
-				{
-					"Effect": "Allow",
-					"Action": [
-						"apigateway:*"
-					],
-					"Resource": [
-						"arn:aws:apigateway:us-east-1::/restapis/*/stages/dev"
-					]
-				}
-			]
-		}
-		break;
-	default: 
-		break
-	}
-	return json
-}

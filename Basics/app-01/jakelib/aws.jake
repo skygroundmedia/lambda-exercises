@@ -24,19 +24,20 @@ var config = {
 }
 
 namespace('aws', function () {
-	/*
+	/* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
 	AWS Command-line
-	*/	
+	* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **/
 	desc('Check your AWS CLI Profile.');
 	task('checkProfile', { async: true }, { breakOnError: true }, function() {
 		if(!config.profile) fail("No awscli profile found within .env. Learn more: https://goo.gl/U2HiAs");
 		complete();
 	});
 
-	/*
+
+	/* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
 	Users
 	http://docs.aws.amazon.com/cli/latest/reference/iam/list-users.html
-	*/
+	* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **/
 	desc('Create new user. Ex: jake aws:createUser[fake-username]');
 	task('createUser', ['aws:checkProfile'], { async: true }, function(username) {
 		if(!username) fail("Please include a username.");
@@ -57,15 +58,21 @@ namespace('aws', function () {
 		jake.exec(cmds, { printStdout: true });
 	});
 
-	/*
+
+	/* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
 	Roles
-	*/
-	desc('Create a new Role');
-	task('createRole', ['aws:checkProfile'], { async: true }, function(role_name, policy_json) {
-		var role_name = "app-api-gateway-role";
-		var json = `		
-		`
-		var cmds = [ util.format('aws iam create-role --role-name %s --assume-role-policy-document %s --profile %s', role_name, policy_json, config.profile) ];
+	Description: You need 2 policy files: TRUST.json + PERMISSION.json
+	* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **/
+	desc('Create a new Role. Ex: aws:createRole[myapp-apigateway-role]');
+	task('createRole', ['aws:checkProfile'], { async: true }, function(role_name, trust_policy, policy_name, permissions_policy) {
+		var trust_policy = "fileb://jakelib/" + trust_policy
+		var permissions_policy = "file://jakelib/" + 
+		var cmds = [ 
+			//Create the role and attach the trust policy that enables the apigateway service to assume this role.
+			util.format('aws iam create-role --role-name %s --assume-role-policy-document %s --profile %s', role_name, trust_policy, config.profile),
+			//Embed the permissions policy (as an inline policy)
+			util.format('aws iam put-role-policy --role-name %s --policy-name %s --policy-document %s --profile %s', role_name, policy_name, permissions_policy, config.profile) 
+		];
 		jake.exec(cmds, { printStdout: true });
 	});
 	
@@ -76,20 +83,19 @@ namespace('aws', function () {
 	});
 	
 
-	/*
+	/* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
 	Policy Files
-	*/	
+	* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **/
 	desc('Create a Policy File.');
-	task('createPolicy', ['aws:checkProfile'], { async: true }, function(policy_name, policy_json, description) {
-		var policy_name = "myapp-awsservice-policy";
+	task('createPolicy', ['aws:checkProfile'], { async: true }, function(policy_name, policy_json) {
 		if(!policy_name || !policy_json || !description) fail("Please include a policy name, a json file and a description.");
-		var cmds = [ util.format('aws iam create-policy --policy-name %s --policy-document %s --description %s --profile %s', policy_name, policy_json, desciption, config.profile) ];
+		var cmds = [ util.format('aws iam create-policy --policy-name %s --policy-document %s --description %s --profile %s', policy_name, policy_json, config.profile) ];
 		jake.exec(cmds, { printStdout: true });
 	});	
 
-	/*
+	/* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
 	Groups
-	*/
+	* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **/
 	desc('Create a Group.');
 	task('createGroup', ['aws:checkProfile'], { async: true }, function(user) {
 	});	
@@ -98,9 +104,9 @@ namespace('aws', function () {
 	task('addToGroup', ['aws:checkProfile'], { async: true }, function(user) {
 	});	
 	
-	/*
+	/* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
 	Lambda
-	*/
+	* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **/
 	desc('List Lambda functions');
 	task('listFunctions', ['aws:checkProfile'], { async: true }, function(user) {
 		var cmds = [ util.format('aws lambda list-functions --profile %s', config.profile) ];
@@ -153,8 +159,7 @@ namespace('aws', function () {
 	task('createExecutionPolicy', ['aws:checkProfile'], { async: true }, function(policy_name) {
 		var json = {
 			"Version": "2012-10-17",
-			"Statement": [
-				{
+			"Statement": [{
 					"Effect": "Allow",
 					"Action": [
 						"logs:CreateLogGroup",
@@ -162,10 +167,10 @@ namespace('aws', function () {
 						"logs:PutLogEvents"						
 					],
 					"Resource": "arn:aws:logs:*:*:*"
-				}
-			]
+			}]
 		}
-		var cmds = [ util.format('aws iam create-policy --policy-name %s --policy-document %s --description %s --profile %s', policy_name, policy_json, desciption, config.profile) ];
+		var cmds = [ util.format('aws iam create-policy --policy-name %s --policy-document %s --description %s --profile %s', 
+					policy_name, policy_json, desciption, config.profile) ];
 		jake.exec(cmds, { printStdout: true });		
 	});	
 });

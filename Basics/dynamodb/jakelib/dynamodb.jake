@@ -15,10 +15,10 @@ namespace('dynamodb', function () {
 
 	//A. Declare where your DB is located.
 	AWS.config.update({
-		region: "us-west-2",
-		endpoint: "http://localhost:8000"
+		region: "us-east-1",
+		endpoint: "https://dynamodb.us-west-2.amazonaws.com"
+//		endpoint: "http://localhost:8000"
 	});
-
 
 	desc('Create a DynamoDB table.');
 	task('create', ['aws:loadCredentials'], { async: true }, function(tableName) {
@@ -99,10 +99,10 @@ namespace('dynamodb', function () {
 				}
 			});
 		});
-	});	
+	});
 	
 	desc('Query all based on year and title');
-	task('query', ['aws:checkProfile'], { async: true }, function(table_name, json) {
+	task('query', ['aws:checkProfile'], { async: true }, function(table_name) {
 		var docClient = new AWS.DynamoDB.DocumentClient();
 
 		console.log("Querying for movies from 1992 - titles A-L, with genres and lead actor");

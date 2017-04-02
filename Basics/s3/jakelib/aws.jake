@@ -12,7 +12,6 @@ var AWS  = require("aws-sdk");
 var fs   = require('fs');
 
 namespace('aws', function () {
-
 	//TODO: Keep this AWS profile up-to-date.
 	var AWS_CREDENTIALS = {
 		profile: "sgm"

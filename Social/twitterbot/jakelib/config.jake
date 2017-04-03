@@ -11,11 +11,10 @@ var AWS  = require("aws-sdk");
 
 //A. YOU MUST MODIFY THIS
 var AWS_CREDENTIALS = { 
-  profile: "gp",
-  region: "us-east-1"
+  profile: "gp"
 }
 
-namespace('aws', function () {
+namespace('config', function () {
 	desc('CONFIG: Prerequisite to most jake tasks.  This loads credentials in NodeJS.');
 	task('checkCredentials', { async: true }, { breakOnError: true }, function() {
 		if(!AWS_CREDENTIALS.profile) fail("No awscli profile found within .env. Learn more: https://goo.gl/U2HiAs");

@@ -1,0 +1,14 @@
+{
+  "name": "twitterbot",
+  "version": "1.0.0",
+  "description": "Twitter bot built on lambda. ",
+  "main": "Jakefile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Chris Mendez",
+  "license": "MIT",
+  "devDependencies": {
+    "aws-cli": "0.0.1"
+  }
+}

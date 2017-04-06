@@ -42,9 +42,9 @@ namespace('kms', function (){
         type = "base64"
         encoding = Buffer.from(buffer).toString('base64')
       }
-      console.log("kmd:encrypt: encoding: ", encoding);
-      var t = jake.Task['kms:decrypt'];
-      t.invoke.apply(t, [encoding, type]);
+//      console.log("kmd:encrypt: encoding: ", encoding);
+//      var t = jake.Task['kms:decrypt'];
+//      t.invoke.apply(t, [encoding, type]);
     });
   });
   

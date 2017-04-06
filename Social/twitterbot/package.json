@@ -9,6 +9,7 @@
   "author": "Chris Mendez",
   "license": "MIT",
   "devDependencies": {
-    "aws-cli": "0.0.1"
+    "aws-cli": "0.0.1",
+    "dotenv": "^4.0.0"
   }
 }

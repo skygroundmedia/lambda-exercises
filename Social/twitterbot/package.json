@@ -11,5 +11,9 @@
   "devDependencies": {
     "aws-cli": "0.0.1",
     "dotenv": "^4.0.0"
+  },
+  "dependencies": {
+    "async": "^2.3.0",
+    "twitter": "^1.7.0"
   }
 }

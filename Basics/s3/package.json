@@ -1,0 +1,21 @@
+{
+  "name": "s3-example",
+  "version": "1.0.0",
+  "description": "Manage S3 using AWS SDK.",
+  "main": "Jakefile.js",
+  "dependencies": {
+    "aws-sdk": "^2.35.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "dynamodb",
+    "aws",
+    "node",
+    "npm"
+  ],
+  "author": "Chris Mendez http://chrisjmendez.com",
+  "license": "Apache-2.0"
+}

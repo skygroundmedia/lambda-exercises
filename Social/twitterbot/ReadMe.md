@@ -58,3 +58,8 @@ Access Token Secret
 ```
 
 ---
+
+
+# Resources 
+
+- [Polygot Twitter](http://joelgrus.com/2015/12/29/polyglot-twitter-bot-part-1-nodejs/)

@@ -14,15 +14,15 @@ var fs   = require('fs');
 namespace('aws', function () {
 	//TODO: Keep this AWS profile up-to-date.
 	var AWS_CREDENTIALS = {
-		profile: "sgm"
+		profile: "uscradio"
 	}
-
+	
 	desc('Prerequisite to most jake tasks.  This loads credentials in NodeJS.');
 	//http://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-shared.html
 	task('loadCredentials', { async: true }, { breakOnError: true }, function() {
 		if(!AWS_CREDENTIALS.profile) fail("No awscli profile found within .env. Learn more: https://goo.gl/U2HiAs");
 		AWS.config.credentials = new AWS.SharedIniFileCredentials({ profile: AWS_CREDENTIALS.profile });
 		//console.log(AWS.config.credentials);
-		complete();
+		complete(AWS_CREDENTIALS);
 	});
 });

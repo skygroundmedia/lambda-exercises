@@ -21,8 +21,8 @@ namespace('s3', function () {
 
 	
 	desc('Upload a file to an S3 bucket.');
-	task('upload', ['aws:loadCredentials'], { async: true }, function(bucket_name, file) {
-		var cmds = [ util.format('aws s3 cp s3://%s --profile %s', bucket_name, config.profile) ];
+	task('upload', ['aws:loadCredentials'], { async: true }, function(bucket_name, file) {    
+		var cmds = [ util.format('aws s3 cp %s s3://%s --profile %s', file, bucket_name, config.profile) ];
 		jake.exec(cmds, { printStdout: true });
 	});
 	

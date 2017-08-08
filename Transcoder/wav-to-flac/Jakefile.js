@@ -12,7 +12,4 @@ require('dotenv').config({path: ''});
 
 desc('Jakefile default.');
 task('default', { async: true }, function() {
-	var config = {
-		profile: process.env.AWSCLI_PROFILE		
-	}
 });

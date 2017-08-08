@@ -27,10 +27,20 @@ aws configure --profile my_profile
 
 # Package your lambda function for deployment
 
+
+## Method 1
+
 This is an OS X, mac specific command that allows you to create a zip-file of your project.
 
 ```
 npm run predeploy
+```
+
+## Method 2
+
+If you're very particular about you want to upload, this example will show you how to get granular with archiving your app.
+```
+jake app:archive
 ```
 
 
@@ -42,3 +52,5 @@ npm run predeploy
 # Resources
 
 - [Converting WAV to FLAC using AWS Transcoder](http://www.chrisjmendez.com/2017/08/07/converting-wav-to-mp4-he-aac-using-elastic-transcoder/)
+- [Serverless for Beginners](https://acloud.guru/course/serverless-for-beginners/dashboard)
+- [Serverless Tube](https://github.com/ServerlessHeroes/serverlesstube/tree/master/lab-1/lambda/video-transcoder)

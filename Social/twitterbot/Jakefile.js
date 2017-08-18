@@ -10,7 +10,6 @@ this specific app.
 var async = require("async");
 var AWS = require("aws-sdk");
 var Twitter = require('twitter');
-//Imported from .dotenv
 var credentials = require('./credentials');
 
 desc('Jakefile default.');
@@ -19,61 +18,62 @@ task('default', ["decryptCredentials"], { async: true }, function() {
 });
 
 task('decryptCredentials', ['config:checkCredentials'], { async: true }, function() {
-  async.parallel({
-    consumer_key: function(callback) {
+  async.waterfall([
+    function(callback) {
       var key = credentials["consumer_key"];
       decrypt(key, function(err, val){
         if(err) callback(err)
         callback(null, val)
       })
     },
-    consumer_secret: function(callback) {
+    function(arg1, callback) {
       var key = credentials["consumer_secret"];
       decrypt(key, function(err, val){
         if(err) callback(err)
-        callback(null, val)
+        callback(null, arg1, val)
       })
     },
-    access_key_token: function(callback) {
-      var key = credentials["access_key_token"];
+    function(arg1, arg2, callback) {
+      var key = credentials["access_token_key"];
       decrypt(key, function(err, val){
         if(err) callback(err)
-        callback(null, val)
+        callback(null, arg1, arg2, val)
       })
     },
-    access_key_secret: function(callback) {
-      var key = credentials["access_key_secret"];
+    function(arg1, arg2, arg3, callback) {
+      var key = credentials["access_token_secret"];
       decrypt(key, function(err, val){
         if(err) callback(err)
-        callback(null, val)
+        callback(null, arg1, arg2, arg3, val)
       })
     }
-  }, function(err, results) {
+    ], function(err, results) {
     if(err) throw err;
     console.log("async.parallel:", results);
+    
     var t = jake.Task['sendTweet'];
-        t.invoke.apply(t, results);
+//        t.invoke.apply(t, [results]);
   });
 });
 
 task('sendTweet', ['config:checkCredentials'], { async: true }, function(decrypted_credentials) {
   var tweet_examples = [
-    "This is my first tweet.",
+    "Rock on Friends!",
     "This is my second tweet.",
     "This is my third tweet.",
     "This is my fourth tweet.",
     "This is my fifth tweet.",
     "This is my sixth tweet."
   ];
+  
   async.auto({
     send_tweet: [function(results, callback) {
-      status = tweet_examples[0];  
+      status = tweet_examples[0];
       console.log(decrypted_credentials)
       var client = new Twitter(decrypted_credentials);
           client.post('statuses/update', { status: status }, function(err, tweet, res){
             console.log("send_tweet", tweet);
-            if(err) callback(err);
-            callback(null);
+            if(err) console.log("!!!!", err);
           });
     }],
     cleanup: ['send_tweet', function(results, callback) {
@@ -88,10 +88,11 @@ task('sendTweet', ['config:checkCredentials'], { async: true }, function(decrypt
 
 function decrypt(key, callback){
   var kms = new AWS.KMS({apiVersion: '2014-11-01'});
-  var decoded = Buffer.from(key, "base64")
+  var decoded = Buffer.from(key, "base64");
   var params = { CiphertextBlob: decoded };
   kms.decrypt(params, function(err, data) {
     if (err) callback(err)
+    console.log(data.Plaintext)
     var val = data.Plaintext.toString('utf8');
     callback(null, val)
   });

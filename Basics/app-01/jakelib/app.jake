@@ -38,6 +38,7 @@ namespace('app', function () {
 			//Recursively Zip everything with exception to anything within excludes
 			util.format('zip -r %s * %s', config.app, excludes)
 		];
+    console.log(cmds)
 		//Set "printStdout" to "true" if you want to see the stack trace
 		jake.exec(cmds, { printStdout: false }, function(){
 			complete();

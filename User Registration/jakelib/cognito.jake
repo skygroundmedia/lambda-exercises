@@ -30,9 +30,8 @@ namespace('cognito', function () {
 	desc('Create a new user with required parameters.');
 	task('signup', ['aws:loadCredentials'], { async: true }, function(user,pass){
 		//Read ReadMe.md to learn how to create a .env file.
-		
 		var config = jake.Task["aws:loadCredentials"].value
-		config.user = user || "b@mailinator.com";
+		config.user = user || "arig@mailinator.com";
 		config.pass = pass || "Passw0rd";
 
 		// Make sure the params match the Pool Aliases
@@ -40,11 +39,12 @@ namespace('cognito', function () {
 			email: config.user,
 			phone_number: "+447397078059",
 			birthdate: "01/05/1980",
-			gender: "na",
+			gender: "m",
 			//custom parameter
-			"custom:custom:newsletter": 1
+			"custom:is_sharable": 1
 		}
 		var cmds = [ util.format('aws cognito-idp sign-up --client-id %s --username %s --password %s --user-attributes %s --region %s', config.client_id, config.user, config.pass, getAttributes(params), config.region) ];
+		console.log(cmds)
 		jake.exec(cmds, { printStdout: true });
 	});	
 });

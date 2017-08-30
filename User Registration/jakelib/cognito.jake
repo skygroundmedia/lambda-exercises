@@ -14,47 +14,75 @@ Temp SMS http://sms-receive.net/
 var util = require('util');
 
 namespace('cognito', function () {
-	desc('Run a.');
-	task('idp', ['aws:loadCredentials'], { async: true }, function(user,pass) {		
-		//Read ReadMe.md to learn how to create a .env file.
-		var config = jake.Task["aws:loadCredentials"].value
-		config.user = user || "b@mailinator.com";
-		config.pass = pass || "Passw0rd";
+  desc('Run a.');
+  task('auth', ['aws:loadCredentials'], { async: true }, function(user,pass) {		
+    //Read ReadMe.md to learn how to create a .env file.
+    var config = jake.Task["aws:loadCredentials"].value
+    config.user = user || "b@mailinator.com";
+    config.pass = pass || "Passw0rd";
 
-		var cmds = [ util.format('aws cognito-idp admin-initiate-auth --user-pool-id %s --client-id %s --auth-flow ADMIN_NO_SRP_AUTH --auth-parameters USERNAME=%s,PASSWORD=%s --region %s --profile %s',
-		config.pool_id, config.client_id, config.user, config.pass, config.region, config.profile) ];
-		jake.exec(cmds, { printStdout: true });
-	});
+    var cmds = [ util.format(`aws cognito-idp admin-initiate-auth \
+        --user-pool-id %s \
+        --client-id %s \
+        --auth-flow ADMIN_NO_SRP_AUTH \
+        --auth-parameters USERNAME=%s,PASSWORD=%s \
+        --region %s \
+        --profile %s`,
+    config.pool_id, config.client_id, config.user, config.pass, config.region, config.profile) ];
+    jake.exec(cmds, { printStdout: true });
+  });
 	
 
-	desc('Create a new user with required parameters.');
-	task('signup', ['aws:loadCredentials'], { async: true }, function(user,pass){
-		//Read ReadMe.md to learn how to create a .env file.
-		var config = jake.Task["aws:loadCredentials"].value
-		config.user = user || "arig@mailinator.com";
-		config.pass = pass || "Passw0rd";
+  desc('Create a new user with required parameters.');
+  task('signup', ['aws:loadCredentials'], { async: true }, function(user,pass){
+    //Read ReadMe.md to learn how to create a .env file.
+    var config = jake.Task["aws:loadCredentials"].value
+    config.user = user || "arig@mailinator.com";
+    config.pass = pass || "Passw0rd";
 
-		// Make sure the params match the Pool Aliases
-		var params = {
-			email: config.user,
-			phone_number: "+447397078059",
-			birthdate: "01/05/1980",
-			gender: "m",
-			//custom parameter
-			"custom:is_sharable": 1
-		}
-		var cmds = [ util.format('aws cognito-idp sign-up --client-id %s --username %s --password %s --user-attributes %s --region %s', config.client_id, config.user, config.pass, getAttributes(params), config.region) ];
-		console.log(cmds)
-		jake.exec(cmds, { printStdout: true });
-	});	
+    // Make sure the params match the Pool Aliases
+    var params = {
+      // email: config.user,
+      // phone_number: "+447397078059",
+      // birthdate: "01/05/1980",
+      // gender: "m",
+      // "custom:is_sharable": 1
+    }
+    var cmds = [ util.format(`aws cognito-idp sign-up \
+        --client-id %s \
+        --username %s \
+        --password %s \
+        --user-attributes %s \
+        --region %s`, 
+    config.client_id, config.user, config.pass, getAttributes(params), config.region) ];
+    console.log(cmds)
+    jake.exec(cmds, { printStdout: true });
+  });	
+  
+  desc('Respond to an initial signup challenge.');
+  task('signup-response', ['aws:loadCredentials'], { async: true }, function() {	
+    var config = jake.Task["aws:loadCredentials"].value
+
+    var cmds = [ util.format(`aws cognito-idp admin-respond-to-auth-challenge \
+        --user-pool-id %s \
+        --region %s \
+        --client-id %s \
+        --challenge-name NEW_PASSWORD_REQUIRED \
+        --challenge-responses NEW_PASSWORD=%s,USERNAME=%s \
+        --session %s`,
+    config.pool_id, config.client_id, config.user, config.pass, config.region, config.profile) ];
+    jake.exec(cmds, { printStdout: true });
+  });
+  
 });
+
 
 // Create a string of custom attributes specifically for AWS Cognito Pools
 function getAttributes(params){
-	var attributes = ""
-	for (var k in params){
-		var attr = util.format("Name=%s,Value=%s ", k, params[k]);
-		attributes += attr
-	}
-	return attributes;
+  var attributes = ""
+  for (var k in params){
+    var attr = util.format("Name=%s,Value=%s ", k, params[k]);
+    attributes += attr
+  }
+  return attributes;
 }

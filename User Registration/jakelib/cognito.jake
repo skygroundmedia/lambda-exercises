@@ -17,9 +17,9 @@ namespace('cognito', function () {
   desc('Run a.');
   task('auth', ['aws:loadCredentials'], { async: true }, function(user,pass) {		
     //Read ReadMe.md to learn how to create a .env file.
-    var config = jake.Task["aws:loadCredentials"].value
-    config.user = user || "b@mailinator.com";
-    config.pass = pass || "Passw0rd";
+    var config = jake.Task["aws:loadCredentials"].value;
+        config.user = user || "b@mailinator.com";
+        config.pass = pass || "Passw0rd";
 
     var cmds = [ util.format(`aws cognito-idp admin-initiate-auth \
         --user-pool-id %s \
@@ -36,9 +36,9 @@ namespace('cognito', function () {
   desc('Create a new user with required parameters.');
   task('signup', ['aws:loadCredentials'], { async: true }, function(user,pass){
     //Read ReadMe.md to learn how to create a .env file.
-    var config = jake.Task["aws:loadCredentials"].value
-    config.user = user || "arig@mailinator.com";
-    config.pass = pass || "Passw0rd";
+    var config = jake.Task["aws:loadCredentials"].value;
+        config.user = user || "arig@mailinator.com";
+        config.pass = pass || "Passw0rd";
 
     // Make sure the params match the Pool Aliases
     var params = {
@@ -57,23 +57,21 @@ namespace('cognito', function () {
     config.client_id, config.user, config.pass, getAttributes(params), config.region) ];
     console.log(cmds)
     jake.exec(cmds, { printStdout: true });
-  });	
-  
-  desc('Respond to an initial signup challenge.');
-  task('signup-response', ['aws:loadCredentials'], { async: true }, function() {	
-    var config = jake.Task["aws:loadCredentials"].value
+  });
 
-    var cmds = [ util.format(`aws cognito-idp admin-respond-to-auth-challenge \
-        --user-pool-id %s \
-        --region %s \
+
+  desc('Confirm Sign Up. Ex: jake aws:signup-response[d@mailinator.com,xxxxxx]');
+  task('signup-confirm', ['aws:loadCredentials'], { async: true }, function(user,confirmation) {	
+    var config = jake.Task["aws:loadCredentials"].value;
+    var cmds = [ util.format(`aws cognito-idp confirm-sign-up \
         --client-id %s \
-        --challenge-name NEW_PASSWORD_REQUIRED \
-        --challenge-responses NEW_PASSWORD=%s,USERNAME=%s \
-        --session %s`,
-    config.pool_id, config.client_id, config.user, config.pass, config.region, config.profile) ];
+        --username %s \
+        --confirmation-code %s \
+        --region %s`,
+      config.client_id, user, confirmation, config.region
+    )];
     jake.exec(cmds, { printStdout: true });
   });
-  
 });
 
 

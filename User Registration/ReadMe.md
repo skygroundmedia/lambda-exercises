@@ -31,26 +31,34 @@ If you need a refresher on how to acquire these configuration keys, visit the re
 
 
 
-# Run Commands
+# Cognito Commands
 
 
-
+## Admin Initiate Auth
 ```language-powerbash
 aws cognito-idp admin-initiate-auth --user-pool-id <pool_id> --client-id <client_id> --auth-flow ADMIN_NO_SRP_AUTH --auth-parameters USERNAME=<username>,PASSWORD=<password> --region <region>
 ```
 
+
+## Admin Respond to Auth Challenge
 ```language-powerbash
 aws cognito-idp admin-respond-to-auth-challenge --user-pool-id <pool_id> --region <region> --client-id <client_id> --challenge-name NEW_PASSWORD_REQUIRED --challenge-responses NEW_PASSWORD=<new-password>,USERNAME=<username> --session <session-key>
 ```
 
+
+## Sign Up
 ```language-powerbash
 aws cognito-idp sign-up --client-id <client-id> --username <username> --password <password> --user-attributes Name=email,Value=<email> --region <region>
 ```
 
+
+## Confirm Sign Up
 ```language-powerbash
 aws cognito-idp confirm-sign-up --client-id <client-id> --username <username> --confirmation-code <confirmation-code> --region <region>
 ```
 
+
+## Initiate Authentication
 ```language-powerbash
 aws cognito-idp admin-initiate-auth --user-pool-id <pool-id> --client-id <client-id> --auth-flow ADMIN_NO_SRP_AUTH --auth-parameters USERNAME=<username>,PASSWORD=<password> --region <region>
 ```

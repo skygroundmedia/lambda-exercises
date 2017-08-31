@@ -35,6 +35,7 @@ If you need a refresher on how to acquire these configuration keys, visit the re
 
 
 ## Admin Initiate Auth
+Authenticate the user.
 ```language-powerbash
 aws cognito-idp admin-initiate-auth --user-pool-id <pool_id> --client-id <client_id> --auth-flow ADMIN_NO_SRP_AUTH --auth-parameters USERNAME=<username>,PASSWORD=<password> --region <region>
 ```

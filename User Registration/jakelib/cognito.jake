@@ -5,16 +5,23 @@ Author: Chris Mendez http://chrisjmendez.com
 Dashboard Console: 
 Docs: 
 Description:
-User Pool Aliases: http://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-attributes.html#user-pool-settings-aliases
-Temp E-mail: https://www.mailinator.com/v2/inbox.jsp?zone=public&query=a
-Temp SMS http://sms-receive.net/
+
+User Pool Aliases: 
+http://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-attributes.html#user-pool-settings-aliases
+
+Temp E-mail: 
+https://www.mailinator.com/v2/inbox.jsp?zone=public&query=a
+
+Temp SMS:
+http://sms-receive.net/
 
 * ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **/
 
 var util = require('util');
 
 namespace('cognito', function () {
-  desc('Run a.');
+  desc('Authenticate user. Ex: jake cognito:auth[e@mailinator.com,P@ssw0rd]');
+  // http://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-client-apps.html
   task('auth', ['aws:loadCredentials'], { async: true }, function(user,pass) {		
     //Read ReadMe.md to learn how to create a .env file.
     var config = jake.Task["aws:loadCredentials"].value;
@@ -29,6 +36,7 @@ namespace('cognito', function () {
         --region %s \
         --profile %s`,
     config.pool_id, config.client_id, config.user, config.pass, config.region, config.profile) ];
+    console.log(cmds);
     jake.exec(cmds, { printStdout: true });
   });
 	

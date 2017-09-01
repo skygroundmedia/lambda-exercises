@@ -20,6 +20,7 @@ http://sms-receive.net/
 var util = require('util');
 
 namespace('cognito', function () {
+
   desc('Authenticate user. Ex: jake cognito:auth[e@mailinator.com,P@ssw0rd]');
   // http://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-client-apps.html
   task('auth', ['aws:loadCredentials'], { async: true }, function(user,pass) {		
@@ -41,8 +42,8 @@ namespace('cognito', function () {
   });
 
 
-  desc('Admin respond to auth challenge. Ex: jake cognito:auth-response[e@mailinator.com,P@ssw0rd,XXXsessionkeyXXX]');
-  task('auth-response', ['aws:loadCredentials'], { async: true }, function(user,pass,sessionKey) {
+  desc('Send response to authentication challenge. Ex: jake cognito:auth-response[e@mailinator.com,P@ssw0rd,XXXsessionkeyXXX]');
+  task('login-confirm', ['aws:loadCredentials'], { async: true }, function(user,pass,sessionKey) {
     //Read ReadMe.md to learn how to create a .env file.
     var config = jake.Task["aws:loadCredentials"].value;
         config.user = user || "b@mailinator.com";

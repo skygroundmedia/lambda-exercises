@@ -11,6 +11,20 @@ User Pools are scalable user directory services that you can use to add authenti
 
 Federated Identity is an identity broker that generate temporary access after user has been authenticated.
 
+---
+
+# Managing Tokens
+
+AWS Cognito uses tokens to authenticate users and provide them with the access they need. After a client authenticates itself, it will receive 3 tokens.
+
+1. **ID Token** is used to authenticate back-end services.
+- **Access Token** are used to edit a user's profile.
+- **Refresh Token** is used to refresh the ID Token and the Access Token.
+
+
+
+---
+
 
 
 # Getting Started
@@ -43,19 +57,6 @@ If you need a refresher on how to acquire these configuration keys, visit the re
 
 
 # Cognito Commands
-These cognito commands are designed 
-
-## Admin Initiate Auth
-Authenticate the user.
-```language-powerbash
-jake cognito:auth[e@mailinator.com,P@ssw0rd]
-```
-
-
-## Admin Respond to Auth Challenge
-```language-powerbash
-jake cognito:auth-response[e@mailinator.com,P@ssw0rd,XXXsessionkeyXXX]
-```
 
 
 ## Sign Up
@@ -64,9 +65,21 @@ jake aws:signup[e@mailinator.com,xxxxxx]
 ```
 
 
-## Confirm Sign Up
+## Sign Up Confirmation
 ```language-powerbash
 jake aws:signup-response[d@mailinator.com,xxxxxx]
+```
+
+
+## Authenticate User
+```language-powerbash
+jake cognito:auth[e@mailinator.com,P@ssw0rd]
+```
+
+
+## Admin Respond to Auth Challenge
+```language-powerbash
+jake cognito:auth-response[e@mailinator.com,P@ssw0rd,XXXsessionkeyXXX]
 ```
 
 

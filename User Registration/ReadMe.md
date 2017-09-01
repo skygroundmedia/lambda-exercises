@@ -1,5 +1,18 @@
 # AWS command line for authenticating users
 
+Amazon Cognito offers two primary features: User Pools and Federated Identity.
+
+
+## User Pools
+User Pools are scalable user directory services that you can use to add authentication and authorization to mobile and web apps.
+
+
+## Federated Identity
+
+Federated Identity is an identity broker that generate temporary access after user has been authenticated.
+
+
+
 # Getting Started
 
 ## Step 1
@@ -7,6 +20,7 @@ Install the necessary node libraries using NPM.
 ```
 npm install
 ```
+
 
 
 ## Step 2
@@ -20,10 +34,7 @@ AWS_SECRET_ACCESS_KEY=NA
 AWS_REGION=us-east-1
 ```
 
-
-
 If you need a refresher on how to acquire these configuration keys, visit the resources below.
-
 
 
 
@@ -32,36 +43,30 @@ If you need a refresher on how to acquire these configuration keys, visit the re
 
 
 # Cognito Commands
-
+These cognito commands are designed 
 
 ## Admin Initiate Auth
 Authenticate the user.
 ```language-powerbash
-aws cognito-idp admin-initiate-auth --user-pool-id <pool_id> --client-id <client_id> --auth-flow ADMIN_NO_SRP_AUTH --auth-parameters USERNAME=<username>,PASSWORD=<password> --region <region>
+jake cognito:auth[e@mailinator.com,P@ssw0rd]
 ```
 
 
 ## Admin Respond to Auth Challenge
 ```language-powerbash
-aws cognito-idp admin-respond-to-auth-challenge --user-pool-id <pool_id> --region <region> --client-id <client_id> --challenge-name NEW_PASSWORD_REQUIRED --challenge-responses NEW_PASSWORD=<new-password>,USERNAME=<username> --session <session-key>
+jake cognito:auth-response[e@mailinator.com,P@ssw0rd,XXXsessionkeyXXX]
 ```
 
 
 ## Sign Up
 ```language-powerbash
-aws cognito-idp sign-up --client-id <client-id> --username <username> --password <password> --user-attributes Name=email,Value=<email> --region <region>
+jake aws:signup[e@mailinator.com,xxxxxx]
 ```
 
 
 ## Confirm Sign Up
 ```language-powerbash
-aws cognito-idp confirm-sign-up --client-id <client-id> --username <username> --confirmation-code <confirmation-code> --region <region>
-```
-
-
-## Initiate Authentication
-```language-powerbash
-aws cognito-idp admin-initiate-auth --user-pool-id <pool-id> --client-id <client-id> --auth-flow ADMIN_NO_SRP_AUTH --auth-parameters USERNAME=<username>,PASSWORD=<password> --region <region>
+jake aws:signup-response[d@mailinator.com,xxxxxx]
 ```
 
 

@@ -41,7 +41,7 @@ namespace('cognito', function () {
   });
 
 
-  desc('Admin respond to auth challenge. Ex: jake cognito:auth[e@mailinator.com,P@ssw0rd,XXXsessionkeyXXX]');
+  desc('Admin respond to auth challenge. Ex: jake cognito:auth-response[e@mailinator.com,P@ssw0rd,XXXsessionkeyXXX]');
   task('auth-response', ['aws:loadCredentials'], { async: true }, function(user,pass,sessionKey) {
     //Read ReadMe.md to learn how to create a .env file.
     var config = jake.Task["aws:loadCredentials"].value;
@@ -62,7 +62,7 @@ namespace('cognito', function () {
   
 	
 
-  desc('Create a new user with required parameters.');
+  desc('Create a new user with required parameters. Ex: jake aws:signup[e@mailinator.com,xxxxxx]');
   task('signup', ['aws:loadCredentials'], { async: true }, function(user,pass){
     //Read ReadMe.md to learn how to create a .env file.
     var config = jake.Task["aws:loadCredentials"].value;

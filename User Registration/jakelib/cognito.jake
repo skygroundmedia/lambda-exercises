@@ -39,6 +39,27 @@ namespace('cognito', function () {
     console.log(cmds);
     jake.exec(cmds, { printStdout: true });
   });
+
+
+  desc('Admin respond to auth challenge. Ex: jake cognito:auth[e@mailinator.com,P@ssw0rd,XXXsessionkeyXXX]');
+  task('auth-response', ['aws:loadCredentials'], { async: true }, function(user,pass,sessionKey) {
+    //Read ReadMe.md to learn how to create a .env file.
+    var config = jake.Task["aws:loadCredentials"].value;
+        config.user = user || "b@mailinator.com";
+        config.pass = pass || "Passw0rd";
+
+    var cmds = [ util.format(`aws cognito-idp admin-respond-to-auth-challenge \
+        --user-pool-id %s \
+        --client-id %s \
+        --challenge-name NEW_PASSWORD_REQUIRED \
+        --challenge-responses NEW_PASSWORD=%s,USERNAME=%s \
+        --region %s \
+        --session %s \
+        --profile %s`,
+    config.pool_id, config.client_id, config.user, config.pass, config.region, sessionKey, config.profile) ];
+    jake.exec(cmds, { printStdout: true });
+  });
+  
 	
 
   desc('Create a new user with required parameters.');

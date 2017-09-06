@@ -63,7 +63,7 @@ namespace('cognito', function () {
   
 	
 
-  desc('Create a new user with required parameters. Ex: jake aws:signup[e@mailinator.com,xxxxxx]');
+  desc('Create a new user with required parameters. Ex: jake cognito:signup[e@mailinator.com,xxxxxx]');
   task('signup', ['aws:loadCredentials'], { async: true }, function(user,pass){
     //Read ReadMe.md to learn how to create a .env file.
     var config = jake.Task["aws:loadCredentials"].value;
@@ -78,6 +78,7 @@ namespace('cognito', function () {
       // gender: "m",
       // "custom:is_sharable": 1
     }
+
     var cmds = [ util.format(`aws cognito-idp sign-up \
         --client-id %s \
         --username %s \
@@ -85,12 +86,12 @@ namespace('cognito', function () {
         --user-attributes %s \
         --region %s`, 
     config.client_id, config.user, config.pass, getAttributes(params), config.region) ];
-    console.log(cmds)
+    console.log(cmds);
     jake.exec(cmds, { printStdout: true });
   });
 
 
-  desc('Confirm Sign Up. Ex: jake aws:signup-response[d@mailinator.com,xxxxxx]');
+  desc('Confirm Sign Up. Ex: jake cognito:signup-response[d@mailinator.com,xxxxxx]');
   task('signup-confirm', ['aws:loadCredentials'], { async: true }, function(user,confirmation) {	
     var config = jake.Task["aws:loadCredentials"].value;
     var cmds = [ util.format(`aws cognito-idp confirm-sign-up \

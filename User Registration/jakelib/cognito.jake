@@ -72,6 +72,7 @@ namespace('cognito', function () {
         // Your Client ID is the ID found in User Pools
         config.client_id = (client_id) ? client_id : config.client_id;
 
+
     // Required parameters from Cognito Pools
     var params = {
       email: config.user

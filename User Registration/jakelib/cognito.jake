@@ -63,16 +63,18 @@ namespace('cognito', function () {
   
 	
 
-  desc('Create a new user with required parameters. Ex: jake cognito:signup[e@mailinator.com,xxxxxx]');
-  task('signup', ['aws:loadCredentials'], { async: true }, function(user,pass){
+  desc('Create a new user with required parameters. Ex: jake cognito:signup[e@mailinator.com,xxxxxx,app_client_id]');
+  task('signup', ['aws:loadCredentials'], { async: true }, function(user,pass,client_id){
     //Read ReadMe.md to learn how to create a .env file.
     var config = jake.Task["aws:loadCredentials"].value;
         config.user = user || "arig@mailinator.com";
         config.pass = pass || "Passw0rd";
+        // Your Client ID is the ID found in User Pools
+        config.client_id = (client_id) ? client_id : config.client_id;
 
-    // Make sure the params match the Pool Aliases
+    // Required parameters from Cognito Pools
     var params = {
-      // email: config.user,
+      email: config.user
       // phone_number: "+447397078059",
       // birthdate: "01/05/1980",
       // gender: "m",

@@ -11,6 +11,7 @@
 ### Step 2 - Install AWS Cli
 
 - Use Node Package Manager to install AWS SDK
+
 ```language-powerbash
 npm install
 ```

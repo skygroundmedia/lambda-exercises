@@ -33,17 +33,17 @@ namespace('lambda', function () {
 	});
 
 
-	desc('Create a Lambda function. Ex: jake lambda:create[function_name,region,role,/path/to/file.zip,"Description of function"]');
+	desc('Create a Lambda function. Ex: jake lambda:create[my-test,us-east-1,arn:aws:iam::xxxxxxx:role/role-lambda-s3-to-elastic-transcoder,Lambda-Deployment.zip,My Description]');
 	//http://docs.aws.amazon.com/cli/latest/reference/lambda/create-function.html
-	task('create', ['aws:checkProfile'], { async: true }, function(name, role, zip_file, description) {
+	task('create', ['aws:checkProfile'], { async: true }, function(name, region, role, zip_file, description) {
 		var region   = region || "us-east-1"
 		var name     = name
-		var handler  = name + ".handler"
+		var handler  = "index" + ".handler"
 		var role     = role
 		var zip_file = "fileb://" + zip_file;
 		var description = description;
-		var cmds = [ 
-			util.format("aws lambda create-function --region %s --function-name %s --zip-file %s --role %s --handler %s --runtime nodejs4.3 --timeout 3 --description %s --debug --profile %s",
+		var cmds = [
+			util.format("aws lambda create-function --region %s --function-name %s --zip-file %s --role %s --handler %s --runtime nodejs6.10 --timeout 30 --description %s --debug --profile %s",
 									region, name, zip_file, role, handler, description, config.profile) 
 		];
 		jake.exec(cmds, { printStdout: true });

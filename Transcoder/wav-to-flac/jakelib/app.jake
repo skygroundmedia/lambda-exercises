@@ -18,6 +18,15 @@ var config = {
 }
 
 namespace('app', function () {
+	
+	
+	desc('Update your .env configuration. Ex: jake app:config[name_of_aws_profile]');
+	task('config', { async: true }, function(profile_name) {
+		var cmds = [ util.format('aws configure --profile %s', profile_name) ];
+		jake.exec(cmds, { printStdout: false });
+	});
+	
+	
 	desc('Archive app for upload.');
 	task('archive', { async: true }, function() {
 		//A. Itemize the files you're excluding then concatenate them

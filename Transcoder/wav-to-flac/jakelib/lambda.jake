@@ -28,7 +28,9 @@ namespace('lambda', function () {
 	desc('List Lambda functions: Ex: jake lambda:list');
 	task('list', ['aws:checkProfile'], { async: true }, function() {
 		if(!config.profile) console.log("Please make sure you've added AWSCLI_PROFILE to ./.env")
-		var cmds = [ util.format('aws lambda list-functions --profile %s', config.profile) ];
+		var cmds = [ 
+			util.format('aws lambda list-functions --profile %s | grep FunctionArn', config.profile)
+		];
 		jake.exec(cmds, { printStdout: true });
 	});
 

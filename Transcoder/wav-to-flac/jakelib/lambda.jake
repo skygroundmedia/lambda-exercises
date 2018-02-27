@@ -36,27 +36,19 @@ namespace('lambda', function () {
 	desc('Create a Lambda function. Ex: jake lambda:create[my-test,us-east-1,arn:aws:iam::xxxxxxx:role/role-lambda-s3-to-elastic-transcoder,Lambda-Deployment.zip,My Description]');
 	//http://docs.aws.amazon.com/cli/latest/reference/lambda/create-function.html
 	task('create', ['aws:checkProfile'], { async: true }, function(name, region, role, zip_file, description) {
-		var region   = region || "us-east-1"
-		var name     = name
-		var handler  = "index" + ".handler"
-		var role     = role
+		var region   = region || "us-east-1";
+		var name     = name;
+		var handler  = "index" + ".handler";
+		var role     = role;
+		var timeout  = 30;
 		var zip_file = "fileb://" + zip_file;
 		var description = description;
 		var cmds = [
-			util.format("aws lambda create-function --region %s --function-name %s --zip-file %s --role %s --handler %s --runtime nodejs6.10 --timeout 30 --description %s --debug --profile %s",
-									region, name, zip_file, role, handler, description, config.profile) 
+			util.format("aws lambda create-function --region %s --function-name %s --zip-file %s --role %s --handler %s --runtime nodejs6.10 --timeout %s --description %s --debug --profile %s",
+									region, name, zip_file, role, handler, timeout, description, config.profile) 
 		];
 		jake.exec(cmds, { printStdout: true });
 	});
-
-
-	desc('Get metadata about a function. Ex: jake lambda:getMetadata[arn:aws:lambda:us-west-1:xxxxxx:function:name-of-function]');
-	//http://docs.aws.amazon.com/cli/latest/reference/lambda/get-function.html
-	task('getMetadata', ['aws:checkProfile'], { async: true }, function(name) {
-		var cmds = [ util.format("aws lambda get-function --function-name %s --profile %s", name, config.profile)];
-		jake.exec(cmds, { printStdout: true });
-	});
-
 
 
 	desc('Update a function. Ex: jake lambda:update[arn:aws:lambda:us-west-1:xxxxxx:function:name-of-function, /path/to/zip/file.zip]');
@@ -67,7 +59,14 @@ namespace('lambda', function () {
 		var cmds = [ util.format('aws lambda update-function-code --function-name %s --zip-file %s --publish --profile %s', name, zip, config.profile)]
 		jake.exec(cmds, { printStdout: true });
 	});	
+
 	
+	desc('Delete a function. Ex: jake lambda:delete[arn:aws:lambda:us-west-1:xxxxxx:function:name-of-function,/path/to/file/with/args.txt]');
+	//http://docs.aws.amazon.com/cli/latest/reference/lambda/delete-function.html
+	task('delete', ['aws:checkProfile'], { async: true }, function(name) {
+		var cmds = [ util.format("aws lambda delete-function --function-name %s --profile %s", name, config.profile)];
+		jake.exec(cmds, { printStdout: true });
+	});  
 	
 	
 	desc('Invoke a function. Ex: jake lambda:invoke[arn:aws:lambda:us-west-1:xxxxxx:function:name-of-function,/path/to/file/with/args.txt]');
@@ -79,12 +78,11 @@ namespace('lambda', function () {
 		jake.exec(cmds, { printStdout: true });
 	});
 	
-	
-	
-	desc('Delete a function. Ex: jake lambda:delete[arn:aws:lambda:us-west-1:xxxxxx:function:name-of-function,/path/to/file/with/args.txt]');
-	//http://docs.aws.amazon.com/cli/latest/reference/lambda/delete-function.html
-	task('delete', ['aws:checkProfile'], { async: true }, function(name) {
-		var cmds = [ util.format("aws lambda delete-function --function-name %s --profile %s", name, config.profile)];
+	desc('Get metadata about a function. Ex: jake lambda:getMetadata[arn:aws:lambda:us-west-1:xxxxxx:function:name-of-function]');
+	//http://docs.aws.amazon.com/cli/latest/reference/lambda/get-function.html
+	task('getMetadata', ['aws:checkProfile'], { async: true }, function(name) {
+		var cmds = [ util.format("aws lambda get-function --function-name %s --profile %s", name, config.profile)];
 		jake.exec(cmds, { printStdout: true });
-	});  
+	});
+	
 });

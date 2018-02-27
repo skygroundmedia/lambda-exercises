@@ -1,12 +1,6 @@
 /**
-* Created by Peter Sbarski
-* Updated by Mike Chambers
-* Modified by Chris Mendez
-* Last Updated: 1/02/2017
-*
-* Required Env Vars:
-* ELASTIC_TRANSCODER_REGION
-* ELASTIC_TRANSCODER_PIPELINE_ID
+* Created by Chris Mendez
+* Last Updated: 02/22/2018
 */
 
 'use strict';
@@ -17,18 +11,17 @@ var elasticTranscoder = new AWS.ElasticTranscoder({
 });
 
 exports.handler = function(event, context, callback){
-	console.log('Welcome');
+	console.log('Hello');
 	console.log('event: ' + JSON.stringify(event));
 
 	var key = event.Records[0].s3.object.key;
 
-	//the input file may have spaces so replace them with '+'
+	// If the file has spaces, replace them with +
 	var sourceKey = decodeURIComponent(key.replace(/\+/g, ' '));
 
-	//remove the extension
+	// Remove any extensions
 	var outputKey = sourceKey.split('.')[0];
 
-	// PLEASE LOOK AT .env LOCALLY OR Environmental Variables inside LAMBDA.
 	var params = {
 		PipelineId: process.env.ELASTIC_TRANSCODER_PIPELINE_ID,
 		OutputKeyPrefix: outputKey + '/',
@@ -37,8 +30,16 @@ exports.handler = function(event, context, callback){
 		},
 		Outputs: [
 			{
-				Key: outputKey + '.flac',
-				PresetId: process.env.ELASTIC_TRANSCODER_PRESET_ID
+				Key: outputKey + '-48k' + '.mp4',
+				PresetId: '1519356733417-70ti8w' //Custom HE-AAC 48k
+			},
+			{
+				Key: outputKey + '-128k' + '.mp4',
+				PresetId: '1351620000001-100130' //Preset AAC 128k
+			},
+			{
+				Key: outputKey + '-128k' + '.mp3',
+				PresetId: '1351620000001-300040' //Preset Mp3 128k
 			}
 	]};
 
@@ -49,3 +50,4 @@ exports.handler = function(event, context, callback){
 		console.log('elasticTranscoder callback data: ' + JSON.stringify(data));
 	});
 };
+

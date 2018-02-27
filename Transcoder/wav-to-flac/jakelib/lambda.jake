@@ -24,8 +24,8 @@ namespace('lambda', function () {
 	/* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
 	Lambda
 	* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **/
-	desc('List Lambda functions: Ex: jake lambda:list');
 	//http://docs.aws.amazon.com/cli/latest/reference/lambda/list-functions.html
+	desc('List Lambda functions: Ex: jake lambda:list');
 	task('list', ['aws:checkProfile'], { async: true }, function() {
 		if(!config.profile) console.log("Please make sure you've added AWSCLI_PROFILE to ./.env")
 		var cmds = [ util.format('aws lambda list-functions --profile %s', config.profile) ];
@@ -33,19 +33,29 @@ namespace('lambda', function () {
 	});
 
 
-	desc('Create a Lambda function. Ex: jake lambda:create[my-test,us-east-1,arn:aws:iam::xxxxxxx:role/role-lambda-s3-to-elastic-transcoder,Lambda-Deployment.zip,My Description]');
 	//http://docs.aws.amazon.com/cli/latest/reference/lambda/create-function.html
-	task('create', ['aws:checkProfile'], { async: true }, function(name, region, role, zip_file, description) {
+	desc('Create a Lambda function. Ex: jake lambda:create[function-name,us-east-1,arn:aws:iam::xxxxxxx:role/role-lambda-s3-to-elastic-transcoder,Lambda-WAV-to-MP4.zip,Convert WAV file to HE-AAC MP4]');
+	task('create', ['aws:checkProfile'], { async: true }, function(name, region, role, zip, description) {
 		var region   = region || "us-east-1";
 		var name     = name;
-		var handler  = "index" + ".handler";
-		var role     = role;
+		var handler  = "index.handler";
+		var role     = role; //AIM Role Arn
 		var timeout  = 30;
-		var zip_file = "fileb://" + zip_file;
+		var zip      = "fileb://" + zip;
 		var description = description;
 		var cmds = [
-			util.format("aws lambda create-function --region %s --function-name %s --zip-file %s --role %s --handler %s --runtime nodejs6.10 --timeout %s --description %s --debug --profile %s",
-									region, name, zip_file, role, handler, timeout, description, config.profile) 
+			util.format(`aws lambda create-function 
+						--region %s 
+						--function-name %s 
+						--zip-file %s 
+						--role %s 
+						--handler %s 
+						--runtime nodejs6.10 
+						--timeout %s 
+						--description %s 
+						--debug 
+						--profile %s`,
+						region, name, zip, role, handler, timeout, description, config.profile) 
 		];
 		jake.exec(cmds, { printStdout: true });
 	});
@@ -61,16 +71,16 @@ namespace('lambda', function () {
 	});	
 
 	
-	desc('Delete a function. Ex: jake lambda:delete[arn:aws:lambda:us-west-1:xxxxxx:function:name-of-function,/path/to/file/with/args.txt]');
 	//http://docs.aws.amazon.com/cli/latest/reference/lambda/delete-function.html
+	desc('Delete a function. Ex: jake lambda:delete[arn:aws:lambda:us-west-1:xxxxxx:function:name-of-function,/path/to/file/with/args.txt]');
 	task('delete', ['aws:checkProfile'], { async: true }, function(name) {
 		var cmds = [ util.format("aws lambda delete-function --function-name %s --profile %s", name, config.profile)];
 		jake.exec(cmds, { printStdout: true });
 	});  
 	
 	
-	desc('Invoke a function. Ex: jake lambda:invoke[arn:aws:lambda:us-west-1:xxxxxx:function:name-of-function,/path/to/file/with/args.txt]');
 	//http://docs.aws.amazon.com/cli/latest/reference/lambda/invoke-async.html
+	desc('Invoke a function. Ex: jake lambda:invoke[arn:aws:lambda:us-west-1:xxxxxx:function:name-of-function,/path/to/file/with/args.txt]');
 	task('invoke', ['aws:checkProfile'], { async: true }, function() {
 		var name = "helloWorld";
 		var args = "/path/to/file/with/arguments.txt";
@@ -78,8 +88,8 @@ namespace('lambda', function () {
 		jake.exec(cmds, { printStdout: true });
 	});
 	
-	desc('Get metadata about a function. Ex: jake lambda:getMetadata[arn:aws:lambda:us-west-1:xxxxxx:function:name-of-function]');
 	//http://docs.aws.amazon.com/cli/latest/reference/lambda/get-function.html
+	desc('Get metadata about a function. Ex: jake lambda:getMetadata[arn:aws:lambda:us-west-1:xxxxxx:function:name-of-function]');
 	task('getMetadata', ['aws:checkProfile'], { async: true }, function(name) {
 		var cmds = [ util.format("aws lambda get-function --function-name %s --profile %s", name, config.profile)];
 		jake.exec(cmds, { printStdout: true });
